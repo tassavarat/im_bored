@@ -7,13 +7,13 @@ ol, ul {
   padding-left: 30px;
 }
 
-.board-row:after {
+.row:after {
   clear: both;
   content: "";
   display: table;
 }
 
-.status {
+.turn {
   margin-bottom: 10px;
 }
 
@@ -36,15 +36,7 @@ ol, ul {
   outline: none;
 }
 
-.kbd-navigation .square:focus {
-  background: #ddd;
-}
-
 .game {
   display: flex;
   flex-direction: row;
-}
-
-.game-info {
-  margin-left: 20px;
 }
