@@ -6,7 +6,10 @@ module.exports = function random (min, max, array) {
 
   while (true) {
     const num = Math.floor(Math.random() * (max - min)) + min;
-    if (array && !array.includes(num)) return num;
-    else return num;
+    if (!array) return num;
+    if (!array.includes(num)) return num;
   }
 };
+
+const random = require('./random');
+console.log(random(0, 5));
