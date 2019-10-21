@@ -13,7 +13,7 @@ function space () {
     grid[i][max] = 'x';
   }
   grid[max].fill('x');
-  grid[random(min + 1, max - 1)][random(min + 1, max - 1)] = '*';
+  grid[random(min, max)][random(min, max)] = '*';
   return grid;
 }
 

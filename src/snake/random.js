@@ -12,4 +12,3 @@ module.exports = function random (min, max, array) {
 };
 
 const random = require('./random');
-console.log(random(0, 5));
