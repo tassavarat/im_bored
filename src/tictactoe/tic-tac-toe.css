@@ -1,12 +1,20 @@
 body {
-  font: 14px "Century Gothic", Futura, sans-serif;
-  margin: 20px;
+  font: 20px "Century Gothic", Futura, sans-serif;
 }
 
 ol, ul {
   padding-left: 30px;
 }
 
+.space {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  }
+
+.board {
+
+}	
 .row:after {
   clear: both;
   content: "";
@@ -18,7 +26,6 @@ ol, ul {
 }
 
 .square {
-  background: #fff;
   border: 1px solid #999;
   float: left;
   font-size: 24px;

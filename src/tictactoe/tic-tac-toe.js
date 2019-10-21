@@ -15,7 +15,6 @@ class Game extends React.Component {
   render () {
     return (
       <div className='game'>
-        <div className='scores'>Tic Tac Toe</div>
         <Board />
       </div>
     );
@@ -126,26 +125,30 @@ class Board extends React.Component {
     else turn = 'You are X';
     // else turn = (this.state.playerTurn ? "X's " : "O's ") + 'turn';
 
-    const score = 'Scores: X: ' + this.scores.x + ' Ties: ' + this.scores.tie + ' O: ' + this.scores.o;
+    const score = 'X: ' + this.scores.x + ' | Ties: ' + this.scores.tie + ' | O: ' + this.scores.o;
 
     return (
 
-      <div className='board'>
+      <div className='space'>
+        <h2> Tic Tac Toe </h2>
+        <div>Scores</div>
         <div className='scores'>{score}</div>
-        <div className='row'>
-          {this.displaySquare(0)}
-          {this.displaySquare(1)}
-          {this.displaySquare(2)}
-        </div>
-        <div className='row'>
-          {this.displaySquare(3)}
-          {this.displaySquare(4)}
-          {this.displaySquare(5)}
-        </div>
-        <div className='row'>
-          {this.displaySquare(6)}
-          {this.displaySquare(7)}
-          {this.displaySquare(8)}
+        <div className='board'>
+          <div className='row'>
+            {this.displaySquare(0)}
+            {this.displaySquare(1)}
+            {this.displaySquare(2)}
+          </div>
+          <div className='row'>
+            {this.displaySquare(3)}
+            {this.displaySquare(4)}
+            {this.displaySquare(5)}
+          </div>
+          <div className='row'>
+            {this.displaySquare(6)}
+            {this.displaySquare(7)}
+            {this.displaySquare(8)}
+          </div>
         </div>
         <div className='turn'>{turn}</div>
       </div>
