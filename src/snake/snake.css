@@ -1,0 +1,18 @@
+.wrapper {
+  display: flex;  
+  justify-content:center;
+  align-items: center;
+}
+.grid {
+  width:300px;
+  height:300px;
+  display: grid;
+  grid-template-columns: repeat(20, 1fr);
+  background: white;
+}
+.cell {
+  display: inline-block;
+}
+.cell-border{
+  border: 0.5px solid #e74c3c;
+}
