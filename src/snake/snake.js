@@ -5,7 +5,7 @@ function space () {
   const size = 10;
   const min = 0;
   const max = 9;
-  const grid = Array.from(Array(size), _ => Array(size).fill('_'));
+  const grid = Array.from(Array(size), () => Array(size).fill('_'));
 
   grid[min].fill('x');
   for (let i = 1; i < size; ++i) {
