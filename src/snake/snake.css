@@ -1,0 +1,34 @@
+.game {
+  display: flex;
+  align-items: center;
+}
+
+.wrapper h1 {
+  text-align: center;
+}
+
+.wrapper {
+ display: flex;
+ justify-content: center;
+ flex-direction: column;
+ }
+
+ .grid {
+  width: 500px;
+  height: 500px; 
+  display: grid;
+  background: pink;
+  grid-template-columns: repeat(21, 1fr);
+}
+
+.cell {
+  border: 0.3px solid white;
+}
+
+.food {
+  background-color: red;
+}
+
+.snakeHead {
+  background-color: green;
+}

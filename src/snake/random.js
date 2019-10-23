@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 module.exports = function random (min, max, array) {
   min = Math.ceil(min) + 1;
   max = Math.floor(max);
@@ -10,5 +8,3 @@ module.exports = function random (min, max, array) {
     if (!array.includes(num)) return num;
   }
 };
-
-const random = require('./random');
