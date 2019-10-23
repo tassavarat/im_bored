@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch, NavLink, Route } from 'react-router-dom';
 import Game from '../tictactoe/tic-tac-toe.js';
-import ShowSpace from '../snake/snake.js';
+import Display from '../snake/snake.js';
 
 const Home = () => (
   <div className='home'>
@@ -23,7 +23,7 @@ const ticTacToe = () => (
 
 const snake = () => (
   <div className='snake'>
-    <ShowSpace/>
+    <Display />
   </div>
 );
 
