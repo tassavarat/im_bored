@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useReducer } from 'react';
 import './snake.css';
 
 /**
@@ -19,6 +19,48 @@ function random (min, max, array) {
     if (!array.includes(num)) return num;
   }
 }
+const directions = {
+  up: 'UP',
+  bottom: 'BOTTOM',
+  right: 'RIGHT',
+  left: 'LEFT'
+};
+const coordinates = {
+  up: (x, y) => ({ x, y: y - 1 }),
+  bottom: (x, y) => ({ x, y: y + 1 }),
+  right: (x, y) => ({ x: x + 1, y }),
+  left: (x, y) => ({ x: x - 1, y }),
+};
+const KEY_CODES_MAPPER = {
+  38: 'UP',
+  39: 'RIGHT',
+  37: 'LEFT',
+  40: 'BOTTOM'
+};
+
+// key codes mapper
+/*const keyCodeMapper = {
+  left: 37,
+  up: 38,
+  right: 39,
+  bottom: 40
+};*/
+
+// reducer
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'ChangeSnakeDirection':
+      return {
+        ...state,
+        playground: {
+          ...state.playground,
+          direction: action.direction
+        }
+      };
+    default:
+      throw new Error();
+  }
+};
 
 /**
  * initGrid - Creates a grid
@@ -64,6 +106,9 @@ function initState () {
     food: {
       row: random(min, max),
       col: random(min, max)
+    },
+    playground: {
+      direction: directions.right
     }
   };
 }
@@ -106,6 +151,32 @@ function displayGrid () {
  * Return: HTML content
  */
 function Display () {
+  const [state, dispatch] = React.useReducer(reducer, initState);
+  console.log(state);
+  const ifDirectionChanged = event => {
+    if (KEY_CODES_MAPPER[event.keyCode]) {
+      dispatch({
+        type: 'ChangeSnakeDirection',
+        direction: KEY_CODES_MAPPER[event.keyCode]
+      });
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('keyup', ifDirectionChanged, false);
+
+    return () =>
+      window.removeEventListener('keyup', ifDirectionChanged, false);
+  }, []);
+
+  useEffect(() => {
+    const onTick = () => {
+      dispatch({ type: 'ChangeSnakeDirection' });
+    };
+    const interval = setInterval(onTick, 1000);
+    return () => clearInterval(interval);
+  }, [state]);
+
   return (
     <div className='game'>
       <div className='wrapper'>
