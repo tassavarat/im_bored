@@ -1,6 +1,14 @@
 import React from 'react';
 import './snake.css';
 
+/**
+ * random - Generates random number not contained within optional array
+ * @min: Minimum value (exclusive)
+ * @max: Maximum value (exclusive)
+ * @array: Values to avoid
+ *
+ * Return: Pseudo-random number
+ */
 function random (min, max, array) {
   min = Math.ceil(min) + 1;
   max = Math.floor(max);
@@ -12,6 +20,12 @@ function random (min, max, array) {
   }
 }
 
+/**
+ * initGrid - Creates a grid
+ * @size: Dimensions of grid
+ *
+ * Return: Created grid
+ */
 function initGrid (size) {
   const grid = [];
   for (let row = 0; row < size; ++row) {
@@ -27,6 +41,11 @@ function initGrid (size) {
   return grid;
 }
 
+/**
+ * initState - Initialises the game state
+ *
+ * Return: Objects containing pertinent information on game
+ */
 function initState () {
   const size = 21;
   const min = 0;
@@ -49,6 +68,11 @@ function initState () {
   };
 }
 
+/**
+ * displayGrid - Changes cell's className according to position in cell
+ *
+ * Return: Div tag containing correct className for each cell
+ */
 function displayGrid () {
   const state = initState();
   const cellStyle = (cell) => {
@@ -76,6 +100,11 @@ function displayGrid () {
   );
 }
 
+/**
+ * Display - Displays game
+ *
+ * Return: HTML content
+ */
 function Display () {
   return (
     <div className='game'>

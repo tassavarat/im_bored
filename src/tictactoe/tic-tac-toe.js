@@ -1,8 +1,13 @@
 import React from 'react';
-// import ReactDOM from 'react-dom';
 import './tic-tac-toe.css';
 const request = require('request');
 
+/**
+ * Square - Updates button tag on click
+ * @props: Click and square status
+ *
+ * Return: HTML button tag for each square
+ */
 function Square (props) {
   return (
     <button className='square' onClick={props.onClick}>
@@ -12,6 +17,11 @@ function Square (props) {
 }
 
 class Game extends React.Component {
+  /**
+   * render - Displays Board class
+   *
+   * Return: Board class inside game div
+   */
   render () {
     return (
       <div className='game'>
@@ -22,6 +32,9 @@ class Game extends React.Component {
 }
 
 class Board extends React.Component {
+  /**
+   * constructor - Creates attributes for the class
+   */
   constructor (props) {
     super(props);
     this.state = {
@@ -37,6 +50,12 @@ class Board extends React.Component {
     };
   }
 
+  /**
+   * computerMove - Calls tic-tac-toe API
+   * @strGrid: String representation of grid
+   *
+   * Return: Position of move for computer to make
+   */
   computerMove (strGrid) {
     const options = {
       method: 'GET',
@@ -55,6 +74,11 @@ class Board extends React.Component {
     });
   }
 
+  /**
+   * gameEnd - Checks for tie or winner
+   *
+   * Return: String of game ending condition or null if game not over
+   */
   gameEnd () {
     const { grid, turnCount } = this.state;
     if (turnCount === 5) return 'It\'s a tie!';
@@ -78,6 +102,10 @@ class Board extends React.Component {
     return null;
   }
 
+  /**
+   * click - Updates state of grid, increments turnCount, and resets game state
+   * @i: Square index
+   */
   async click (i) {
     const grid = this.state.grid.slice();
     const turnCount = this.state.turnCount;
@@ -101,15 +129,26 @@ class Board extends React.Component {
     });
   }
 
+  /**
+   * displaySquare - Passes onClick and value for specific square to Square
+   * @i: Position of specific square
+   *
+   * Return: Button HTML tag
+   */
   displaySquare (i) {
     return (
       <Square
-        val={this.state.grid[i]}
         onClick={() => this.click(i)}
+        val={this.state.grid[i]}
       />
     );
   }
 
+  /**
+   * render - Displays the game
+   *
+   * Return: HTML content
+   */
   render () {
     const gameStatus = this.gameEnd();
     let turn;
@@ -156,5 +195,4 @@ class Board extends React.Component {
   }
 }
 
-// ReactDOM.render(<Game />, document.getElementById('root'));
 export default Game;
