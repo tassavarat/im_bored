@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import './snake.css';
 
 /**
@@ -49,13 +49,13 @@ const KEY_CODES_MAPPER = {
 // reducer
 const reducer = (state, action) => {
   switch (action.type) {
-    case 'ChangeSnakeDirection':
+    case 'SnakeMove':
       return {
-        ...state,
-        playground: {
+        ...state
+        /*playground: {
           ...state.playground,
           direction: action.direction
-        }
+        }*/
       };
     default:
       throw new Error();
@@ -88,13 +88,30 @@ function initGrid (size) {
  *
  * Return: Objects containing pertinent information on game
  */
-function initState () {
+function InitState () {
   const size = 21;
   const min = 0;
   const max = size - 1;
   const grid = initGrid(size);
 
-  return {
+  const [state, setState] = useState(
+    {
+      grid: grid,
+      snake: {
+        head: {
+          row: max / 2,
+          col: max / 2
+        },
+        tail: []
+      },
+      food: {
+        row: random(min, max),
+        col: random(min, max)
+      }
+    }
+  );
+  return state;
+     /*
     grid,
     snake: {
       head: {
@@ -106,20 +123,22 @@ function initState () {
     food: {
       row: random(min, max),
       col: random(min, max)
-    },
+    }
     playground: {
       direction: directions.right
-    }
-  };
+    }*/
 }
 
+/*function move () {
+  setState();
+} */
 /**
  * displayGrid - Changes cell's className according to position in cell
  *
  * Return: Div tag containing correct className for each cell
  */
 function displayGrid () {
-  const state = initState();
+  const state = InitState();
   const cellStyle = (cell) => {
     let style = 'cell';
     if ((cell.row === state.food.row) && (cell.col === state.food.col)) {
@@ -130,6 +149,7 @@ function displayGrid () {
     }
     return style;
   };
+
   return (
     state.grid.map((row) => {
       return row.map((cell) => {
@@ -151,29 +171,28 @@ function displayGrid () {
  * Return: HTML content
  */
 function Display () {
-  const [state, dispatch] = React.useReducer(reducer, initState);
-  console.log(state);
-  const ifDirectionChanged = event => {
+  const [newState, dispatch] = React.useReducer(reducer, state);
+   /*const ifDirectionChanged = event => {
     if (KEY_CODES_MAPPER[event.keyCode]) {
       dispatch({
         type: 'ChangeSnakeDirection',
         direction: KEY_CODES_MAPPER[event.keyCode]
       });
     }
-  };
+  };*/
 
-  useEffect(() => {
+ /* useEffect(() => {
     window.addEventListener('keyup', ifDirectionChanged, false);
 
     return () =>
       window.removeEventListener('keyup', ifDirectionChanged, false);
-  }, []);
+  }, []);*/
 
   useEffect(() => {
     const onTick = () => {
-      dispatch({ type: 'ChangeSnakeDirection' });
+      dispatch({ type: 'SnakeMove' });
     };
-    const interval = setInterval(onTick, 1000);
+    const interval = setInterval(onTick, 500);
     return () => clearInterval(interval);
   }, [state]);
 
