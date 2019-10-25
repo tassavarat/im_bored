@@ -61,7 +61,7 @@ function InitState () {
       },
       tail: []
     },
-    direction: 'up',
+    direction: null,
     food: {
       row: random(min, max),
       col: random(min, max)
@@ -70,13 +70,6 @@ function InitState () {
 }
 
 function reducer (state, action) {
-  /*
-    left: { row: state.snake.head.row, col: state.snake.head.col - 1 },
-    up: { row: state.snake.head.row - 1, col: state.snake.head.col },
-    right: { row: state.snake.head.row, col: state.snake.head.col + 1 },
-    down: { row: state.snake.head.row + 1, col: state.snake.head.col }
-  };
-  */
   switch (action.type) {
     case 'ArrowLeft':
       return { ...state, direction: 'left' };
@@ -106,6 +99,14 @@ const mapper = {
  */
 function DisplayGrid () {
   const [state, dispatch] = useReducer(reducer, InitState());
+  /*
+  const direction = {
+    left: { row: state.snake.head.row, col: state.snake.head.col - 1 },
+    up: { row: state.snake.head.row - 1, col: state.snake.head.col },
+    right: { row: state.snake.head.row, col: state.snake.head.col + 1 },
+    down: { row: state.snake.head.row + 1, col: state.snake.head.col }
+  };
+  */
   console.log('state:', state);
 
   const newDirection = e => {
@@ -118,6 +119,11 @@ function DisplayGrid () {
   useEffect(() => {
     const onTick = () => {
       console.log('onTick');
+      if (state.direction === 'up') {
+        state.snake.head.row = state.snake.head.row - 1;
+      } else if (state.direction === 'down') {
+        state.snake.head.row = state.snake.head.row + 1;
+      }
     };
     const interval = setInterval(onTick, 250);
     return () => clearInterval(interval);
