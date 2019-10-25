@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useState, useEffect } from 'react';
 import './snake.css';
 
 /**
@@ -19,48 +19,6 @@ function random (min, max, array) {
     if (!array.includes(num)) return num;
   }
 }
-const directions = {
-  up: 'UP',
-  bottom: 'BOTTOM',
-  right: 'RIGHT',
-  left: 'LEFT'
-};
-const coordinates = {
-  up: (x, y) => ({ x, y: y - 1 }),
-  bottom: (x, y) => ({ x, y: y + 1 }),
-  right: (x, y) => ({ x: x + 1, y }),
-  left: (x, y) => ({ x: x - 1, y }),
-};
-const KEY_CODES_MAPPER = {
-  38: 'UP',
-  39: 'RIGHT',
-  37: 'LEFT',
-  40: 'BOTTOM'
-};
-
-// key codes mapper
-/*const keyCodeMapper = {
-  left: 37,
-  up: 38,
-  right: 39,
-  bottom: 40
-};*/
-
-// reducer
-const reducer = (state, action) => {
-  switch (action.type) {
-    case 'SnakeMove':
-      return {
-        ...state
-        /*playground: {
-          ...state.playground,
-          direction: action.direction
-        }*/
-      };
-    default:
-      throw new Error();
-  }
-};
 
 /**
  * initGrid - Creates a grid
@@ -94,24 +52,7 @@ function InitState () {
   const max = size - 1;
   const grid = initGrid(size);
 
-  const [state, setState] = useState(
-    {
-      grid: grid,
-      snake: {
-        head: {
-          row: max / 2,
-          col: max / 2
-        },
-        tail: []
-      },
-      food: {
-        row: random(min, max),
-        col: random(min, max)
-      }
-    }
-  );
-  return state;
-     /*
+  return {
     grid,
     snake: {
       head: {
@@ -124,21 +65,23 @@ function InitState () {
       row: random(min, max),
       col: random(min, max)
     }
-    playground: {
-      direction: directions.right
-    }*/
+  };
 }
 
-/*function move () {
-  setState();
-} */
 /**
  * displayGrid - Changes cell's className according to position in cell
  *
  * Return: Div tag containing correct className for each cell
  */
-function displayGrid () {
-  const state = InitState();
+function DisplayGrid () {
+  const [state, setState] = useState(InitState());
+  const direction = {
+    left: { row: state.snake.head.row, col: state.snake.head.col - 1 },
+    up: { row: state.snake.head.row - 1, col: state.snake.head.col },
+    right: { row: state.snake.head.row, col: state.snake.head.col + 1 },
+    down: { row: state.snake.head.row + 1, col: state.snake.head.col }
+  };
+
   const cellStyle = (cell) => {
     let style = 'cell';
     if ((cell.row === state.food.row) && (cell.col === state.food.col)) {
@@ -149,6 +92,14 @@ function displayGrid () {
     }
     return style;
   };
+
+  useEffect(() => {
+    const onTick = () => {
+      setState(state => ({ ...state, snake: { head: direction.up } }));
+    };
+    const interval = setInterval(onTick, 250);
+    return () => clearInterval(interval);
+  }, [state]);
 
   return (
     state.grid.map((row) => {
@@ -171,37 +122,12 @@ function displayGrid () {
  * Return: HTML content
  */
 function Display () {
-  const [newState, dispatch] = React.useReducer(reducer, state);
-   /*const ifDirectionChanged = event => {
-    if (KEY_CODES_MAPPER[event.keyCode]) {
-      dispatch({
-        type: 'ChangeSnakeDirection',
-        direction: KEY_CODES_MAPPER[event.keyCode]
-      });
-    }
-  };*/
-
- /* useEffect(() => {
-    window.addEventListener('keyup', ifDirectionChanged, false);
-
-    return () =>
-      window.removeEventListener('keyup', ifDirectionChanged, false);
-  }, []);*/
-
-  useEffect(() => {
-    const onTick = () => {
-      dispatch({ type: 'SnakeMove' });
-    };
-    const interval = setInterval(onTick, 500);
-    return () => clearInterval(interval);
-  }, [state]);
-
   return (
     <div className='game'>
       <div className='wrapper'>
         <h1> Snake </h1>
         <div className='grid'>
-          {displayGrid()}
+          {DisplayGrid()}
         </div>
       </div>
     </div>
