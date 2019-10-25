@@ -1,5 +1,15 @@
-import React, { useReducer, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import './snake.css';
+
+const SIZE = 21;
+const MIN = 0;
+const MAX = SIZE - 1;
+const mapper = {
+  37: 'ArrowLeft',
+  38: 'ArrowUp',
+  39: 'ArrowRight',
+  40: 'ArrowDown'
+};
 
 /**
  * random - Generates random number not contained within optional array
@@ -26,11 +36,11 @@ function random (min, max, array) {
  *
  * Return: Created grid
  */
-function initGrid (size) {
+function initGrid () {
   const grid = [];
-  for (let row = 0; row < size; ++row) {
+  for (let row = 0; row < SIZE; ++row) {
     const cols = [];
-    for (let col = 0; col < size; ++col) {
+    for (let col = 0; col < SIZE; ++col) {
       cols.push({
         row,
         col
@@ -41,56 +51,23 @@ function initGrid (size) {
   return grid;
 }
 
-/**
- * initState - Initialises the game state
- *
- * Return: Objects containing pertinent information on game
- */
-function InitState () {
-  const size = 21;
-  const min = 0;
-  const max = size - 1;
-  const grid = initGrid(size);
-
+function initSnake () {
   return {
-    grid,
-    snake: {
-      head: {
-        row: max / 2,
-        col: max / 2
-      },
-      tail: []
+    head: {
+      row: MAX / 2,
+      col: MAX / 2
     },
-    direction: null,
-    food: {
-      row: random(min, max),
-      col: random(min, max)
-    }
+    tail: [],
+    direction: null
   };
 }
 
-function reducer (state, action) {
-  switch (action.type) {
-    case 'ArrowLeft':
-      return { ...state, direction: 'left' };
-    case 'ArrowUp':
-      return { ...state, direction: 'up' };
-    case 'ArrowRight':
-      return { ...state, direction: 'right' };
-    case 'ArrowDown':
-      return { ...state, direction: 'down' };
-    default:
-      throw new Error();
-  }
+function initFood () {
+  return {
+    row: random(MIN, MAX),
+    col: random(MIN, MAX)
+  };
 }
-
-// state => ({ ...state, snake: { head: direction.up } })
-const mapper = {
-  37: 'ArrowLeft',
-  38: 'ArrowUp',
-  39: 'ArrowRight',
-  40: 'ArrowDown'
-};
 
 /**
  * displayGrid - Changes cell's className according to position in cell
@@ -98,32 +75,38 @@ const mapper = {
  * Return: Div tag containing correct className for each cell
  */
 function DisplayGrid () {
-  const [state, dispatch] = useReducer(reducer, InitState());
-  /*
+  // eslint-disable-next-line
+  const [grid, setGrid] = useState(initGrid());
+  const [snake, setSnake] = useState(initSnake());
+  // eslint-disable-next-line
+  const [food, setFood] = useState(initFood());
   const direction = {
-    left: { row: state.snake.head.row, col: state.snake.head.col - 1 },
-    up: { row: state.snake.head.row - 1, col: state.snake.head.col },
-    right: { row: state.snake.head.row, col: state.snake.head.col + 1 },
-    down: { row: state.snake.head.row + 1, col: state.snake.head.col }
+    left: { ...snake, head: { row: snake.head.row, col: snake.head.col - 1 } },
+    up: { ...snake, head: { row: snake.head.row - 1, col: snake.head.col } },
+    right: { ...snake, head: { row: snake.head.row, col: snake.head.col + 1 } },
+    down: { ...snake, head: { row: snake.head.row + 1, col: snake.head.col } }
   };
-  */
-  console.log('state:', state);
+  console.log('snake:', snake);
 
   const newDirection = e => {
     if (mapper[e.keyCode]) {
-      dispatch({ type: mapper[e.keyCode] });
+      setSnake(snake => ({ ...snake, direction: mapper[e.keyCode] }));
     }
   };
-  window.addEventListener('keydown', newDirection);
+
+  useEffect(() => {
+    window.addEventListener('keydown', newDirection);
+    return () =>
+      window.removeEventListener('keydown', newDirection);
+  });
 
   useEffect(() => {
     const onTick = () => {
       console.log('onTick');
-      if (state.direction === 'up') {
-        state.snake.head.row = state.snake.head.row - 1;
-      } else if (state.direction === 'down') {
-        state.snake.head.row = state.snake.head.row + 1;
-      }
+      if (snake.direction === 'ArrowLeft') setSnake(snake => (direction.left));
+      if (snake.direction === 'ArrowUp') setSnake(snake => (direction.up));
+      if (snake.direction === 'ArrowRight') setSnake(snake => (direction.right));
+      if (snake.direction === 'ArrowDown') setSnake(snake => (direction.down));
     };
     const interval = setInterval(onTick, 250);
     return () => clearInterval(interval);
@@ -131,17 +114,17 @@ function DisplayGrid () {
 
   const cellStyle = (cell) => {
     let style = 'cell';
-    if ((cell.row === state.food.row) && (cell.col === state.food.col)) {
+    if ((cell.row === food.row) && (cell.col === food.col)) {
       style = 'food';
-    } else if ((cell.row === state.snake.head.row) &&
-      (cell.col === state.snake.head.col)) {
+    } else if ((cell.row === snake.head.row) &&
+      (cell.col === snake.head.col)) {
       style = 'snakeHead';
     }
     return style;
   };
 
   return (
-    state.grid.map((row) => {
+    grid.map((row) => {
       return row.map((cell) => {
         const st = cellStyle(cell);
         return (
