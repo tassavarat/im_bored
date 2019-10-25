@@ -61,6 +61,7 @@ function InitState () {
       },
       tail: []
     },
+    direction: 'up',
     food: {
       row: random(min, max),
       col: random(min, max)
@@ -77,8 +78,14 @@ function reducer (state, action) {
   };
   */
   switch (action.type) {
+    case 'ArrowLeft':
+      return { ...state, direction: 'left' };
     case 'ArrowUp':
-      return { ...state, snake: { head: { row: state.snake.head.row - 1, col: state.snake.head.col } } };
+      return { ...state, direction: 'up' };
+    case 'ArrowRight':
+      return { ...state, direction: 'right' };
+    case 'ArrowDown':
+      return { ...state, direction: 'down' };
     default:
       throw new Error();
   }
@@ -86,7 +93,7 @@ function reducer (state, action) {
 
 // state => ({ ...state, snake: { head: direction.up } })
 const mapper = {
-  37: 'ArrowRight',
+  37: 'ArrowLeft',
   38: 'ArrowUp',
   39: 'ArrowRight',
   40: 'ArrowDown'
@@ -99,23 +106,22 @@ const mapper = {
  */
 function DisplayGrid () {
   const [state, dispatch] = useReducer(reducer, InitState());
-  console.log('stuff', state);
+  console.log('state:', state);
 
   const newDirection = e => {
     if (mapper[e.keyCode]) {
-      dispatch(mapper[e.keyCode]);
+      dispatch({ type: mapper[e.keyCode] });
     }
   };
+  window.addEventListener('keydown', newDirection);
 
   useEffect(() => {
-    window.addEventListener('keydown', newDirection);
     const onTick = () => {
-      // console.log('onTick');
+      console.log('onTick');
     };
-
     const interval = setInterval(onTick, 250);
     return () => clearInterval(interval);
-  }, [state]);
+  });
 
   const cellStyle = (cell) => {
     let style = 'cell';
