@@ -75,6 +75,7 @@ function InitState () {
  */
 function DisplayGrid () {
   const [state, setState] = useState(InitState());
+
   const direction = {
     left: { row: state.snake.head.row, col: state.snake.head.col - 1 },
     up: { row: state.snake.head.row - 1, col: state.snake.head.col },
@@ -95,8 +96,44 @@ function DisplayGrid () {
 
   useEffect(() => {
     const onTick = () => {
-      setState(state => ({ ...state, snake: { head: direction.up } }));
+      window.addEventListener('keydown', (e) => {
+        switch (e.key) {
+          case 'Down': // IE/Edge specific value
+          case 'ArrowDown':
+            setState(state => ({ ...state, snake: { head: direction.down } }));
+            // Do something for 'down arrow' key press.
+            break;
+          case 'Up': // IE/Edge specific value
+          case 'ArrowUp':
+            setState(state => ({ ...state, snake: { head: direction.up } }));
+            // Do something for 'up arrow' key press.
+            break;
+          case 'Left': // IE/Edge specific value
+          case 'ArrowLeft':
+            setState(state => ({ ...state, snake: { head: direction.left } }));
+            // Do something for 'left arrow' key press.
+            break;
+          case 'Right': // IE/Edge specific value
+          case 'ArrowRight':
+            setState(state => ({ ...state, snake: { head: direction.right } }));
+            // Do something for 'right arrow' key press.
+            break;
+          default:
+        }
+      }, true);
+      /*
+        if (e.key === 'ArrowUp') {
+        } else if (e.key === 'ArrowDown') {
+          key = { row: state.snake.head.row + 1, col: state.snake.head.col };
+        } else if (e.key === 'ArrowRight') {
+          key = { row: state.snake.head.row, col: state.snake.head.col + 1 };
+        } else if (e.key === 'ArrowLeft') {
+          key = { row: state.snake.head.row, col: state.snake.head.col - 1 };
+        }
+      });
+      */
     };
+
     const interval = setInterval(onTick, 250);
     return () => clearInterval(interval);
   }, [state]);
