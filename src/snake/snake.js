@@ -72,13 +72,13 @@ function InitState () {
 function reducer (state, action) {
   switch (action.type) {
     case 'ArrowLeft':
-      return { ...state, direction: 'left' };
+      return { ...state, snake: { head: { row: state.snake.head.row, col: state.snake.head.col - 1 } }, direction: 'left' };
     case 'ArrowUp':
-      return { ...state, direction: 'up' };
+      return { ...state, snake: { head: { row: state.snake.head.row - 1, col: state.snake.head.col } }, direction: 'up' };
     case 'ArrowRight':
-      return { ...state, direction: 'right' };
+      return { ...state, snake: { head: { row: state.snake.head.row, col: state.snake.head.col + 1 } }, direction: 'right' };
     case 'ArrowDown':
-      return { ...state, direction: 'down' };
+      return { ...state, snake: { head: { row: state.snake.head.row + 1, col: state.snake.head.col } }, direction: 'down' };
     default:
       throw new Error();
   }
@@ -99,35 +99,33 @@ const mapper = {
  */
 function DisplayGrid () {
   const [state, dispatch] = useReducer(reducer, InitState());
-  /*
-  const direction = {
-    left: { row: state.snake.head.row, col: state.snake.head.col - 1 },
-    up: { row: state.snake.head.row - 1, col: state.snake.head.col },
-    right: { row: state.snake.head.row, col: state.snake.head.col + 1 },
-    down: { row: state.snake.head.row + 1, col: state.snake.head.col }
-  };
-  */
-  console.log('state:', state);
 
   const newDirection = e => {
     if (mapper[e.keyCode]) {
       dispatch({ type: mapper[e.keyCode] });
     }
   };
-  window.addEventListener('keydown', newDirection);
+  useEffect(() => {
+    window.addEventListener('keyup', newDirection);
+    return () =>
+      window.removeEventListener('keyup', newDirection);
+  });
 
   useEffect(() => {
     const onTick = () => {
-      console.log('onTick');
       if (state.direction === 'up') {
-        state.snake.head.row = state.snake.head.row - 1;
+        dispatch({ type: 'ArrowUp' });
       } else if (state.direction === 'down') {
-        state.snake.head.row = state.snake.head.row + 1;
+        dispatch({ type: 'ArrowDown' });
+      } else if (state.direction === 'right') {
+        dispatch({ type: 'ArrowRight' });
+      } else if (state.direction === 'left') {
+        dispatch({ type: 'ArrowLeft' });
       }
     };
-    const interval = setInterval(onTick, 250);
+    const interval = setInterval(onTick, 100);
     return () => clearInterval(interval);
-  });
+  }, [state]);
 
   const cellStyle = (cell) => {
     let style = 'cell';
