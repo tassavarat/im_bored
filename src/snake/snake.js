@@ -69,6 +69,20 @@ function initFood () {
   };
 }
 
+function eatFood (snake, food, setFood) {
+  if (snake.head.row === food.row && snake.head.col === food.col) {
+    setFood(food =>
+      ({ ...food, row: random(MIN, MAX), col: random(MIN, MAX) }));
+  }
+}
+
+function snakeCrash (snake, setSnake) {
+  if (snake.head.row === MIN || snake.head.row === MAX ||
+    snake.head.col === MIN || snake.head.col === MAX) {
+    setSnake(initSnake());
+  }
+}
+
 /**
  * displayGrid - Changes cell's className according to position in cell
  *
@@ -78,7 +92,6 @@ function DisplayGrid () {
   // eslint-disable-next-line
   const [grid, setGrid] = useState(initGrid());
   const [snake, setSnake] = useState(initSnake());
-  // eslint-disable-next-line
   const [food, setFood] = useState(initFood());
   const direction = {
     left: { ...snake, head: { row: snake.head.row, col: snake.head.col - 1 } },
@@ -86,7 +99,9 @@ function DisplayGrid () {
     right: { ...snake, head: { row: snake.head.row, col: snake.head.col + 1 } },
     down: { ...snake, head: { row: snake.head.row + 1, col: snake.head.col } }
   };
-  console.log('snake:', snake);
+  // console.log('snake:', snake);
+  eatFood(snake, food, setFood);
+  snakeCrash(snake, setSnake);
 
   const newDirection = e => {
     if (mapper[e.keyCode]) {
@@ -102,11 +117,10 @@ function DisplayGrid () {
 
   useEffect(() => {
     const onTick = () => {
-      console.log('onTick');
       if (snake.direction === 'ArrowLeft') setSnake(snake => (direction.left));
-      if (snake.direction === 'ArrowUp') setSnake(snake => (direction.up));
-      if (snake.direction === 'ArrowRight') setSnake(snake => (direction.right));
-      if (snake.direction === 'ArrowDown') setSnake(snake => (direction.down));
+      else if (snake.direction === 'ArrowUp') setSnake(snake => (direction.up));
+      else if (snake.direction === 'ArrowRight') setSnake(snake => (direction.right));
+      else if (snake.direction === 'ArrowDown') setSnake(snake => (direction.down));
     };
     const interval = setInterval(onTick, 250);
     return () => clearInterval(interval);
