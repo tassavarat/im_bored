@@ -31,10 +31,14 @@
   border: 0.3px solid white;
 }
 
+.snakeHead {
+  background-color: green;
+}
+
 .food {
   background-color: red;
 }
 
-.snakeHead {
-  background-color: green;
+.snakeTail {
+  background-color: yellow;
 }

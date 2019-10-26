@@ -69,10 +69,13 @@ function initFood () {
   };
 }
 
-function eatFood (snake, food, setFood) {
+function eatFood (snake, food, setSnake, setFood) {
   if (snake.head.row === food.row && snake.head.col === food.col) {
     setFood(food =>
       ({ ...food, row: random(MIN, MAX), col: random(MIN, MAX) }));
+    // setSnake(snake => ({ ...snake, tail: snake.tail.push(snake.head) }));
+    snake.tail.push(snake.head);
+    // console.log('snake:', snake);
   }
 }
 
@@ -100,7 +103,7 @@ function DisplayGrid () {
     down: { ...snake, head: { row: snake.head.row + 1, col: snake.head.col } }
   };
   // console.log('snake:', snake);
-  eatFood(snake, food, setFood);
+  eatFood(snake, food, setSnake, setFood);
   snakeCrash(snake, setSnake);
 
   const newDirection = e => {
@@ -116,6 +119,15 @@ function DisplayGrid () {
   });
 
   useEffect(() => {
+    console.log('snake.head', snake.head);
+    for (let i = 0; snake.tail[i]; ++i) {
+      console.log('snake.tail[i - 1]', snake.tail[i - 1]);
+      if (i === 0 && snake.tail[i] !== snake.head) {
+        snake.tail[i] = snake.head;
+      } else if (i !== 0 && snake.tail[i] !== snake.tail[i - 1]) {
+        snake.tail[i] = snake.tail[i - 1];
+      }
+    }
     const onTick = () => {
       if (snake.direction === 'ArrowLeft') setSnake(snake => (direction.left));
       else if (snake.direction === 'ArrowUp') setSnake(snake => (direction.up));
@@ -128,11 +140,17 @@ function DisplayGrid () {
 
   const cellStyle = (cell) => {
     let style = 'cell';
-    if ((cell.row === food.row) && (cell.col === food.col)) {
-      style = 'food';
-    } else if ((cell.row === snake.head.row) &&
+    if ((cell.row === snake.head.row) &&
       (cell.col === snake.head.col)) {
       style = 'snakeHead';
+    } else if ((cell.row === food.row) && (cell.col === food.col)) {
+      style = 'food';
+    }
+    for (let i = 0; snake.tail[i]; ++i) {
+      if (snake.tail[i] && cell.row === snake.tail[i].row &&
+      cell.col === snake.tail[i].col) {
+        style = 'snakeTail';
+      }
     }
     return style;
   };
