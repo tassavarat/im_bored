@@ -74,13 +74,13 @@ function eatFood (snake, food, setSnake, setFood) {
   console.log('head is', snake.head);
   console.log('food', food);
   */
-  if (snake.head.row === food.row && snake.head.col === food.col) {
+  if (snake.head.row !== food.row || snake.head.col !== food.col) {
+    snakeCrash(snake, setSnake);
+  } else if (snake.head.row === food.row && snake.head.col === food.col) {
     setFood(food =>
       ({ ...food, row: random(MIN, MAX), col: random(MIN, MAX) }));
     snake.tail.push(snake.head);
     // console.log('EATED AT', snake.head);
-  } else {
-    snakeCrash(snake, setSnake);
   }
 }
 
@@ -88,6 +88,10 @@ function snakeCrash (snake, setSnake) {
   if (snake.head.row === MIN || snake.head.row === MAX ||
     snake.head.col === MIN || snake.head.col === MAX) {
     setSnake(snake => (initSnake()));
+  }
+  if (snake.tail.find((e) =>
+    e.row === snake.head.row && e.col === snake.head.col)) {
+    console.log('died');
   }
   /*
   if (snake.tail.includes(snake.head)) {
@@ -134,7 +138,7 @@ function DisplayGrid () {
     window.addEventListener('keydown', newDirection);
     return () =>
       window.removeEventListener('keydown', newDirection);
-  });
+  }, []);
 
   useEffect(() => {
     for (let i = snake.tail.length - 1; i > -1; --i) {
@@ -160,8 +164,8 @@ function DisplayGrid () {
     } else if ((cell.row === food.row) && (cell.col === food.col)) {
       style = 'food';
     }
-    for (let i = 0; snake.tail[i]; ++i) {
-      if (snake.tail[i] && cell.row === snake.tail[i].row &&
+    for (let i = 0; i < snake.tail.length; ++i) {
+      if (cell.row === snake.tail[i].row &&
       cell.col === snake.tail[i].col) {
         style = 'snakeTail';
       }
