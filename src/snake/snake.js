@@ -70,20 +70,38 @@ function initFood () {
 }
 
 function eatFood (snake, food, setSnake, setFood) {
+  /*
+  console.log('head is', snake.head);
+  console.log('food', food);
+  */
   if (snake.head.row === food.row && snake.head.col === food.col) {
     setFood(food =>
       ({ ...food, row: random(MIN, MAX), col: random(MIN, MAX) }));
-    // setSnake(snake => ({ ...snake, tail: snake.tail.push(snake.head) }));
     snake.tail.push(snake.head);
-    // console.log('snake:', snake);
+    // console.log('EATED AT', snake.head);
+  } else {
+    snakeCrash(snake, setSnake);
   }
 }
 
 function snakeCrash (snake, setSnake) {
   if (snake.head.row === MIN || snake.head.row === MAX ||
     snake.head.col === MIN || snake.head.col === MAX) {
-    setSnake(initSnake());
+    setSnake(snake => (initSnake()));
   }
+  /*
+  if (snake.tail.includes(snake.head)) {
+    console.log('####DIED head at', snake.head);
+    setSnake(snake => (initSnake()));
+  }
+  */
+  /*
+  for (let i = 0; i < snake.tail.length; ++i) {
+    if (snake.tail[i] === snake.head) {
+      setSnake(initSnake());
+    }
+  }
+  */
 }
 
 /**
@@ -103,8 +121,8 @@ function DisplayGrid () {
     down: { ...snake, head: { row: snake.head.row + 1, col: snake.head.col } }
   };
   // console.log('snake:', snake);
+  // snakeCrash(snake, food, setSnake, setFood);
   eatFood(snake, food, setSnake, setFood);
-  snakeCrash(snake, setSnake);
 
   const newDirection = e => {
     if (mapper[e.keyCode]) {
@@ -119,22 +137,18 @@ function DisplayGrid () {
   });
 
   useEffect(() => {
-    console.log('snake.head', snake.head);
-    for (let i = 0; snake.tail[i]; ++i) {
-      console.log('snake.tail[i - 1]', snake.tail[i - 1]);
-      if (i === 0 && snake.tail[i] !== snake.head) {
-        snake.tail[i] = snake.head;
-      } else if (i !== 0 && snake.tail[i] !== snake.tail[i - 1]) {
-        snake.tail[i] = snake.tail[i - 1];
-      }
+    for (let i = snake.tail.length - 1; i > -1; --i) {
+      if (i > 0) snake.tail[i] = snake.tail[i - 1];
+      else snake.tail[i] = snake.head;
     }
     const onTick = () => {
       if (snake.direction === 'ArrowLeft') setSnake(snake => (direction.left));
       else if (snake.direction === 'ArrowUp') setSnake(snake => (direction.up));
       else if (snake.direction === 'ArrowRight') setSnake(snake => (direction.right));
       else if (snake.direction === 'ArrowDown') setSnake(snake => (direction.down));
+      // eatFood(snake, food, setSnake, setFood);
     };
-    const interval = setInterval(onTick, 250);
+    const interval = setInterval(onTick, 200);
     return () => clearInterval(interval);
   });
 
