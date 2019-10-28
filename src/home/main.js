@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch, NavLink, Route } from 'react-router-dom';
 import Game from '../tictactoe/tic-tac-toe.js';
 import Display from '../snake/snake.js';
+import './App.css';
 
 const Home = () => (
   <div className='home'>
@@ -11,6 +12,12 @@ const Home = () => (
         <li><NavLink to='/snake'>Snake</NavLink></li>
       </ul>
     </nav>
+    <footer>
+      <ul> Made by
+        <li> Tim Assavarat </li>
+        <li> Sofia Cheung </li>
+      </ul>
+    </footer>
   </div>
 );
 
