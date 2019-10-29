@@ -24,7 +24,7 @@
   height: 500px; 
   display: grid;
   background: pink;
-  grid-template-columns: repeat(19, 1fr);
+  grid-template-columns: repeat(11, 1fr);
 }
 
 .cell {
