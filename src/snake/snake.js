@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './snake.css';
 
-const SIZE = 21;
+const SIZE = 11;
 const MIN = 0;
-const MAX = SIZE - 1;
 const mapper = {
   37: 'ArrowLeft',
   38: 'ArrowUp',
@@ -13,21 +12,27 @@ const mapper = {
 
 /**
  * random - Generates random number not contained within optional array
- * @min: Minimum value (exclusive)
+ * @min: Minimum value (inclusive)
  * @max: Maximum value (exclusive)
  * @array: Values to avoid
  *
  * Return: Pseudo-random number
  */
-function random (min, max, array) {
-  min = Math.ceil(min) + 1;
-  max = Math.floor(max);
+function random (array) {
+  const grid = Array.from(Array(SIZE).keys());
 
-  while (true) {
-    const num = Math.floor(Math.random() * (max - min)) + min;
-    if (!array) return num;
-    if (!array.includes(num)) return num;
+  // Check if both arrays were passed
+  if (array) {
+    // Make j variable, increment along w/ i
+    for (let i = 0; i < array.length; ++i) {
+      // Compare that both i and j not occupied
+      const idx = grid.indexOf(array[i]);
+      if (idx > -1) grid.splice(idx, 1);
+    }
   }
+  // Generate number for row and col
+  // Return object or array with 2 values
+  return grid[Math.floor(Math.random() * (grid.length - 0)) + 0];
 }
 
 /**
@@ -54,8 +59,12 @@ function initGrid () {
 function initSnake () {
   return {
     head: {
-      row: MAX / 2,
-      col: MAX / 2
+      row: Math.floor(SIZE / 2),
+      col: Math.floor(SIZE / 2)
+    },
+    neck: {
+      row: Math.floor(SIZE / 2),
+      col: Math.floor(SIZE / 2)
     },
     tail: [],
     direction: null
@@ -64,44 +73,37 @@ function initSnake () {
 
 function initFood () {
   return {
-    row: random(MIN, MAX),
-    col: random(MIN, MAX)
+    row: random(),
+    col: random()
   };
 }
 
 function eatFood (snake, food, setSnake, setFood) {
-  /*
-  console.log('head is', snake.head);
-  console.log('food', food);
-  */
-  if (snake.head.row === food.row && snake.head.col === food.col) {
+  if (snake.head.row !== food.row || snake.head.col !== food.col) {
+    snakeCrash(snake, setSnake);
+  } else if (snake.head.row === food.row && snake.head.col === food.col) {
+    const tailRow = [];
+    const tailCol = [];
+    for (let i = 0; i < snake.tail.length; ++i) {
+      tailRow.push(snake.tail[i].row);
+      tailCol.push(snake.tail[i].col);
+    }
+    // Pass both arrays to random, probably call here also
     setFood(food =>
-      ({ ...food, row: random(MIN, MAX), col: random(MIN, MAX) }));
+      ({ ...food, row: random(tailRow), col: random(tailCol) }));
     snake.tail.push(snake.head);
     // console.log('EATED AT', snake.head);
-  } else {
-    snakeCrash(snake, setSnake);
   }
 }
 
 function snakeCrash (snake, setSnake) {
-  if (snake.head.row === MIN || snake.head.row === MAX ||
-    snake.head.col === MIN || snake.head.col === MAX) {
+  if (snake.head.row < MIN || snake.head.row === SIZE ||
+    snake.head.col < MIN || snake.head.col === SIZE ||
+    snake.tail.find((e) =>
+      e.row === snake.head.row && e.col === snake.head.col)) {
+    // console.log('died');
     setSnake(snake => (initSnake()));
   }
-  /*
-  if (snake.tail.includes(snake.head)) {
-    console.log('####DIED head at', snake.head);
-    setSnake(snake => (initSnake()));
-  }
-  */
-  /*
-  for (let i = 0; i < snake.tail.length; ++i) {
-    if (snake.tail[i] === snake.head) {
-      setSnake(initSnake());
-    }
-  }
-  */
 }
 
 /**
@@ -115,14 +117,29 @@ function DisplayGrid () {
   const [snake, setSnake] = useState(initSnake());
   const [food, setFood] = useState(initFood());
   const direction = {
-    left: { ...snake, head: { row: snake.head.row, col: snake.head.col - 1 } },
-    up: { ...snake, head: { row: snake.head.row - 1, col: snake.head.col } },
-    right: { ...snake, head: { row: snake.head.row, col: snake.head.col + 1 } },
-    down: { ...snake, head: { row: snake.head.row + 1, col: snake.head.col } }
+    left: {
+      ...snake,
+      head: { row: snake.head.row, col: snake.head.col - 1 },
+      neck: { row: snake.head.row, col: snake.head.col }
+    },
+    up: {
+      ...snake,
+      head: { row: snake.head.row - 1, col: snake.head.col },
+      neck: { row: snake.head.row, col: snake.head.col }
+    },
+    right: {
+      ...snake,
+      head: { row: snake.head.row, col: snake.head.col + 1 },
+      neck: { row: snake.head.row, col: snake.head.col }
+    },
+    down: {
+      ...snake,
+      head: { row: snake.head.row + 1, col: snake.head.col },
+      neck: { row: snake.head.row, col: snake.head.col }
+    }
   };
-  // console.log('snake:', snake);
   // snakeCrash(snake, food, setSnake, setFood);
-  eatFood(snake, food, setSnake, setFood);
+  if (!food.row || !food.col) console.log('tail', snake.tail);
 
   const newDirection = e => {
     if (mapper[e.keyCode]) {
@@ -134,34 +151,42 @@ function DisplayGrid () {
     window.addEventListener('keydown', newDirection);
     return () =>
       window.removeEventListener('keydown', newDirection);
-  });
+  }, []);
 
   useEffect(() => {
-    for (let i = snake.tail.length - 1; i > -1; --i) {
-      if (i > 0) snake.tail[i] = snake.tail[i - 1];
-      else snake.tail[i] = snake.head;
-    }
     const onTick = () => {
-      if (snake.direction === 'ArrowLeft') setSnake(snake => (direction.left));
-      else if (snake.direction === 'ArrowUp') setSnake(snake => (direction.up));
-      else if (snake.direction === 'ArrowRight') setSnake(snake => (direction.right));
-      else if (snake.direction === 'ArrowDown') setSnake(snake => (direction.down));
-      // eatFood(snake, food, setSnake, setFood);
+      if (snake.direction === 'ArrowLeft') {
+        setSnake(snake => (direction.left));
+      } else if (snake.direction === 'ArrowUp') {
+        setSnake(snake => (direction.up));
+      } else if (snake.direction === 'ArrowRight') {
+        setSnake(snake => (direction.right));
+      } else if (snake.direction === 'ArrowDown') {
+        setSnake(snake => (direction.down));
+      }
+      eatFood(snake, food, setSnake, setFood);
+      for (let i = snake.tail.length - 1; i > -1; --i) {
+        if (i > 0) snake.tail[i] = snake.tail[i - 1];
+        else snake.tail[i] = snake.head;
+      }
     };
-    const interval = setInterval(onTick, 200);
+    const interval = setInterval(onTick, 100);
     return () => clearInterval(interval);
   });
 
   const cellStyle = (cell) => {
     let style = 'cell';
-    if ((cell.row === snake.head.row) &&
-      (cell.col === snake.head.col)) {
-      style = 'snakeHead';
-    } else if ((cell.row === food.row) && (cell.col === food.col)) {
+    if ((cell.row === food.row) && (cell.col === food.col)) {
       style = 'food';
+    } else if ((cell.row === snake.head.row) &&
+      (cell.col === snake.head.col)) {
+      style = 'head';
+    } else if ((cell.row === snake.neck.row) &&
+      (cell.col === snake.neck.col)) {
+      style = 'neck';
     }
-    for (let i = 0; snake.tail[i]; ++i) {
-      if (snake.tail[i] && cell.row === snake.tail[i].row &&
+    for (let i = 0; i < snake.tail.length; ++i) {
+      if (cell.row === snake.tail[i].row &&
       cell.col === snake.tail[i].col) {
         style = 'snakeTail';
       }

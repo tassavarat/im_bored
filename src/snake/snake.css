@@ -24,19 +24,23 @@
   height: 500px; 
   display: grid;
   background: pink;
-  grid-template-columns: repeat(21, 1fr);
+  grid-template-columns: repeat(11, 1fr);
 }
 
 .cell {
   border: 0.3px solid white;
 }
 
-.snakeHead {
+.food {
+  background-color: red;
+}
+
+.head {
   background-color: green;
 }
 
-.food {
-  background-color: red;
+.neck {
+  background-color: green;
 }
 
 .snakeTail {
