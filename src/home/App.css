@@ -1,4 +1,11 @@
+html {
+  background-color: #F2F2F2;
+}
+
 .app {
+  width: 100%;
+  height: 100%;
+  position: relative;
   height: 100%;
 }
 
@@ -11,50 +18,63 @@
 
 .active:hover {
   padding: 10px;
-  border: 1.5px solid #141414;
   transition: all 0.2s;
   color: #464646;
-  box-shadow: 4px 8px 16px 0 rgba(0, 0, 0, 0.1);
 } 
-
-.app {
- width: 100%;
- height: 100%;
-}
 
 .home {
   width: 100%;
   height: 100%;
-  position: relative;
 }
 
+.title {
+  display: flex;
+  justify-content: center;
+
+}
+
+.instruction {
+  color: gray;
+  font-size: 20px;
+  align-self: flex-end;
+  margin-bottom: 40px;
+}
+
+.navi {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+
 ul {
+  width: 700px;
+  justify-content: center;
   padding-inline-start: 0;
   margin-block-end: 0;
   margin-block-start: 0;
   margin-bottom: 20px;
 }
 
-nav ul {
+.navi ul {
   list-style: none;
   display: flex;
-  align-items: stretch;
-  justify-content: space-around;
+  justify-content: center;
 
 }
 
-nav ul li {
+.navi ul li {
   height: 300px; 
   width: 100%;
   text-align: center;
-  margin: 9px;
+  margin: 10px;
   display: block;
   font-size: 1.5em;
-  line-height: 250px;
+  line-height: 275px;
   background-color: #F2F2F2;
 }
 
-nav ul li a {
+.navi ul li a {
   box-sizing: border-box;
   background: transparent; 
   border: 1.5px solid #141414;
@@ -72,23 +92,59 @@ nav ul li a {
 }
 
 
-nav ul li a:hover {
+.navi ul li a:hover {
   color: white;
   background: #1B1B1B;
 }
 
 footer {
-  position: absolute;
-  display:flex;
-  align-content: flex-end;
+  display: inline-block;
   text-align: center;
   width: 100%;
   height: 100%;
 }
 
+h4 {
+  margin-block-end: 0px;
+}
+
 footer ul {
-  width: 100%;
-  height: 100%;
-  align-items: flex-end;
-  align-content: flex-end;
+  display: inline-block;
+  width: 700px;
+}
+
+footer ul li {
+  background: #1B1B1B;
+  margin: 10px;
+  padding: 10px;
+  list-style: none;
+  transition: all 0.2s;
+  box-shadow: 4px 8px 16px 0 rgba(0, 0, 0, 0.1);
+  animation: rotate 0.7s ease-in-out;
+  animation: storm 0.7s ease-in-out;
+  animation-delay: 0.06s;
+}
+
+footer ul li a {
+  color: white;
+  text-decoration: none;
+}
+
+footer ul li a:hover {
+  width: auto; 
+  color: #121212;
+}
+
+footer ul li:hover {
+  color: #121212;
+  background-color: #F2F2F2;
+}
+
+input {
+  border: none;
+  font: 20px "Century Gothic", Futura, sans-serif;
+  background: transparent;
+  cursor: pointer;
+  text-decoration: none;
+  color: gray;
 }
