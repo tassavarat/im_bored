@@ -19,24 +19,20 @@ const mapper = {
  * Return: Pseudo-random number
  */
 function random (array) {
-  const min = Math.ceil(MIN);
-  const max = Math.floor(SIZE);
+  const grid = Array.from(Array(SIZE).keys());
 
-  while (true) {
-    const num = Math.floor(Math.random() * (max - min)) + min;
-    if (!array) {
-      // console.log('INITIAL NUM', num);
-      return num;
+  // Check if both arrays were passed
+  if (array) {
+    // Make j variable, increment along w/ i
+    for (let i = 0; i < array.length; ++i) {
+      // Compare that both i and j not occupied
+      const idx = grid.indexOf(array[i]);
+      if (idx > -1) grid.splice(idx, 1);
     }
-    if (!array.includes(num)) {
-      // console.log('FINAL NUM', num);
-      return num;
-    } /* else {
-      console.log('else array', array);
-      console.log('else num', num);
-    }
-    */
   }
+  // Generate number for row and col
+  // Return object or array with 2 values
+  return grid[Math.floor(Math.random() * (grid.length - 0)) + 0];
 }
 
 /**
@@ -83,10 +79,6 @@ function initFood () {
 }
 
 function eatFood (snake, food, setSnake, setFood) {
-  /*
-  console.log('head is', snake.head);
-  console.log('food', food);
-  */
   if (snake.head.row !== food.row || snake.head.col !== food.col) {
     snakeCrash(snake, setSnake);
   } else if (snake.head.row === food.row && snake.head.col === food.col) {
@@ -96,6 +88,7 @@ function eatFood (snake, food, setSnake, setFood) {
       tailRow.push(snake.tail[i].row);
       tailCol.push(snake.tail[i].col);
     }
+    // Pass both arrays to random, probably call here also
     setFood(food =>
       ({ ...food, row: random(tailRow), col: random(tailCol) }));
     snake.tail.push(snake.head);
@@ -145,9 +138,8 @@ function DisplayGrid () {
       neck: { row: snake.head.row, col: snake.head.col }
     }
   };
-  // console.log('snake:', snake);
-  // console.log('food', food);
   // snakeCrash(snake, food, setSnake, setFood);
+  if (!food.row || !food.col) console.log('tail', snake.tail);
 
   const newDirection = e => {
     if (mapper[e.keyCode]) {
