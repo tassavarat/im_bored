@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './snake.css';
 
+let START = 0;
 const SIZE = 11;
 const MIN = 0;
 const mapper = {
@@ -18,21 +19,39 @@ const mapper = {
  *
  * Return: Pseudo-random number
  */
-function random (array) {
-  const grid = Array.from(Array(SIZE).keys());
+function random (array, setFood) {
+  if (!setFood && START) return;
 
-  // Check if both arrays were passed
+  const row = Array.from(Array(SIZE).keys());
+  const col = Array.from(Array(SIZE).keys());
+
+  console.log('initial row', row);
+  console.log('initial col', col);
   if (array) {
-    // Make j variable, increment along w/ i
     for (let i = 0; i < array.length; ++i) {
-      // Compare that both i and j not occupied
-      const idx = grid.indexOf(array[i]);
-      if (idx > -1) grid.splice(idx, 1);
+      const rowIdx = row.indexOf(array[i]);
+      const colIdx = col.indexOf(array[i]);
+      if (rowIdx > -1) row.splice(rowIdx, 1);
+      if (colIdx > -1) col.splice(colIdx, 1);
+      console.log('row', row);
+      console.log('col', col);
     }
+  } else {
+    row.splice(Math.floor(SIZE / 2), 1);
+    col.splice(Math.floor(SIZE / 2), 1);
+
+    return {
+      row: row[Math.floor(Math.random() * (row.length - 0)) + 0],
+      col: col[Math.floor(Math.random() * (col.length - 0)) + 0]
+    };
   }
-  // Generate number for row and col
-  // Return object or array with 2 values
-  return grid[Math.floor(Math.random() * (grid.length - 0)) + 0];
+
+  setFood(food =>
+    ({
+      ...food,
+      row: row[Math.floor(Math.random() * (row.length - 0)) + 0],
+      col: col[Math.floor(Math.random() * (col.length - 0)) + 0]
+    }));
 }
 
 /**
@@ -42,6 +61,8 @@ function random (array) {
  * Return: Created grid
  */
 function initGrid () {
+  if (START) return;
+
   const grid = [];
   for (let row = 0; row < SIZE; ++row) {
     const cols = [];
@@ -57,6 +78,8 @@ function initGrid () {
 }
 
 function initSnake () {
+  if (START) return;
+
   return {
     head: {
       row: Math.floor(SIZE / 2),
@@ -71,14 +94,8 @@ function initSnake () {
   };
 }
 
-function initFood () {
-  return {
-    row: random(),
-    col: random()
-  };
-}
-
 function eatFood (snake, food, setSnake, setFood) {
+  if (START === 0) START = 1;
   if (snake.head.row !== food.row || snake.head.col !== food.col) {
     snakeCrash(snake, setSnake);
   } else if (snake.head.row === food.row && snake.head.col === food.col) {
@@ -89,8 +106,11 @@ function eatFood (snake, food, setSnake, setFood) {
       tailCol.push(snake.tail[i].col);
     }
     // Pass both arrays to random, probably call here also
+    /*
     setFood(food =>
       ({ ...food, row: random(tailRow), col: random(tailCol) }));
+    */
+    random(tailRow, setFood);
     snake.tail.push(snake.head);
     // console.log('EATED AT', snake.head);
   }
@@ -102,6 +122,7 @@ function snakeCrash (snake, setSnake) {
     snake.tail.find((e) =>
       e.row === snake.head.row && e.col === snake.head.col)) {
     // console.log('died');
+    START = 0;
     setSnake(snake => (initSnake()));
   }
 }
@@ -115,7 +136,7 @@ function DisplayGrid () {
   // eslint-disable-next-line
   const [grid, setGrid] = useState(initGrid());
   const [snake, setSnake] = useState(initSnake());
-  const [food, setFood] = useState(initFood());
+  const [food, setFood] = useState(random());
   const direction = {
     left: {
       ...snake,
@@ -139,7 +160,7 @@ function DisplayGrid () {
     }
   };
   // snakeCrash(snake, food, setSnake, setFood);
-  if (!food.row || !food.col) console.log('tail', snake.tail);
+  // if (!food.row || !food.col) console.log('tail', snake.tail);
 
   const newDirection = e => {
     if (mapper[e.keyCode]) {
