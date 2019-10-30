@@ -9,7 +9,7 @@ Holberton School's foundations final project made with Javascript React, HTML an
 This website was made by using Javascript React, HTML and CSS. Deployed with Heroku.
 
 ## Features
-- Home Page
+### Home Page
 
 ![Home Page](https://i.imgur.com/aifDzri.png)
 
@@ -18,7 +18,7 @@ I'm Bored home page displays a collection of game options and a made by section.
 
 [view github file](./src/home/main.js) 
  
-- Tic Tac Toe
+### Tic Tac Toe
 
 ![Tic Tac Toe](https://i.imgur.com/5nlNyNK.png)
 
@@ -27,7 +27,7 @@ Our implementation of the Tic Tac Toe game allows a single player to play agains
 
 [view github file](./src/tictactoe/tic-tac-toe.js)
 
-- Snake
+### Snake
 
 ![Snake](https://i.imgur.com/Vr1DSjz.png)
 
