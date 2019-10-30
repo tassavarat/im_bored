@@ -21,11 +21,12 @@
 }
 
 .wrapper h1 {
-  border: 3px solid #141414;
+  border: 3px solid #F3F3F3;
+  background-color: #141414;
   border-radius: 30px;
   width: 100%;
   text-align: center;
-  color: #141414;
+  color: #F3F3F3;
 }
 
 .wrapper {

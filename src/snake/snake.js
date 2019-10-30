@@ -170,6 +170,7 @@ function DisplayGrid () {
   };
 
   const newDirection = e => {
+    e.view.event.preventDefault();
     if (!snake.direction) {
       SCORE = 0;
       setSnake(snake => (initSnake()));
@@ -264,13 +265,15 @@ function Display () {
         <div className='grid'>
           {DisplayGrid()}
         </div>
-        <div className='scores'>
+        <div className='score'>
           Points: {SCORE}
         </div>
+        <div> Use arrow keys to move </div>
+        <br />
       </div>
-      <div className='bottomText'>
+      <span role='img' aria-label='' className='bottomText'>
         Click main title to change games &#9757;
-      </div>
+      </span>
     </div>
   );
 }

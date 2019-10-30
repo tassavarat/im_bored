@@ -26,8 +26,9 @@ class Game extends React.Component {
     return (
       <div className='tttgame'>
         <Board />
-        <div className='bText'> Click main title to change games &#9757;
-        </div>
+        <span role='img' aria-label='' className='bText'>
+          Click main title to change games &#9757;
+        </span>
       </div>
     );
   }
