@@ -20,7 +20,8 @@ const mapper = {
  * Return: Pseudo-random number
  */
 function random (snake, setFood) {
-  // if (!setFood && START) return;
+  if (!setFood && START) return;
+  console.log('test');
 
   let array = [];
 
@@ -67,8 +68,6 @@ function random (snake, setFood) {
  * Return: Created grid
  */
 function initGrid () {
-  // if (START) return;
-
   const grid = [];
   for (let row = 0; row < SIZE; ++row) {
     const cols = [];
@@ -84,7 +83,7 @@ function initGrid () {
 }
 
 /**
- * initSnake - Creates snake object
+ * initGame - Creates snake object
  *
  * Return: Snake object
  */
@@ -92,6 +91,7 @@ function initSnake () {
   // if (START) return;
 
   return {
+    grid: initGrid(),
     head: {
       row: Math.floor(SIZE / 2),
       col: Math.floor(SIZE / 2)
@@ -113,7 +113,6 @@ function initSnake () {
  * @setFood: Function to set food
  */
 function eatFood (snake, food, setSnake, setFood) {
-  if (START === 0) START = 1;
   if (snake.head.row !== food.row || snake.head.col !== food.col) {
     snakeCrash(snake, setSnake);
   } else if (snake.head.row === food.row && snake.head.col === food.col) {
@@ -133,7 +132,6 @@ function snakeCrash (snake, setSnake) {
     snake.head.col < MIN || snake.head.col === SIZE ||
     snake.tail.find((e) =>
       e.row === snake.head.row && e.col === snake.head.col)) {
-    START = 0;
     setSnake(snake => ({ ...snake, direction: null }));
   }
 }
@@ -144,9 +142,9 @@ function snakeCrash (snake, setSnake) {
  * Return: Div tag containing correct className for each cell
  */
 function DisplayGrid () {
-  // eslint-disable-next-line
-  const [grid, setGrid] = useState(initGrid());
   const [snake, setSnake] = useState(initSnake());
+
+  !snake.direction ? START = 0 : START = 1;
   const [food, setFood] = useState(random());
   const direction = {
     left: {
@@ -239,7 +237,7 @@ function DisplayGrid () {
   };
 
   return (
-    grid.map((row) => {
+    snake.grid.map((row) => {
       return row.map((cell) => {
         const st = cellStyle(cell);
         return (
