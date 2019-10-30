@@ -13,10 +13,9 @@ const mapper = {
 };
 
 /**
- * random - Generates random number not contained within optional array
- * @min: Minimum value (inclusive)
- * @max: Maximum value (exclusive)
- * @array: Values to avoid
+ * random - Generates random number not contained within snake
+ * @snake: snake object
+ * @setFood: Function to modify food
  *
  * Return: Pseudo-random number
  */
@@ -64,7 +63,6 @@ function random (snake, setFood) {
 
 /**
  * initGrid - Creates a grid
- * @size: Dimensions of grid
  *
  * Return: Created grid
  */
@@ -85,6 +83,11 @@ function initGrid () {
   return grid;
 }
 
+/**
+ * initSnake - Creates snake object
+ *
+ * Return: Snake object
+ */
 function initSnake () {
   // if (START) return;
 
@@ -102,6 +105,13 @@ function initSnake () {
   };
 }
 
+/**
+ * eatFood - Checks if snake position overlaps food and increments score
+ * @snake: snake object
+ * @food: food object
+ * @setSnake: Function to set snake
+ * @setFood: Function to set food
+ */
 function eatFood (snake, food, setSnake, setFood) {
   if (START === 0) START = 1;
   if (snake.head.row !== food.row || snake.head.col !== food.col) {
@@ -113,6 +123,11 @@ function eatFood (snake, food, setSnake, setFood) {
   }
 }
 
+/**
+ * snakeCrash - Checks if snake has left grid or collided with tail
+ * @snake: snake object
+ * @setSnake: Function to set snake
+ */
 function snakeCrash (snake, setSnake) {
   if (snake.head.row < MIN || snake.head.row === SIZE ||
     snake.head.col < MIN || snake.head.col === SIZE ||
