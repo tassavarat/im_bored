@@ -6,17 +6,21 @@ import './App.css';
 
 const Home = () => (
   <div className='home'>
-    <nav>
+    <nav className='navi'>
       <ul>
         <li><NavLink to='/ticTacToe'>Tic Tac Toe</NavLink></li>
         <li><NavLink to='/snake'>Snake</NavLink></li>
       </ul>
     </nav>
     <footer>
-      <ul> Made by
-        <li> Tim Assavarat </li>
-        <li> Sofia Cheung </li>
+      <h4> Made by </h4>
+      <ul>
+        <li><a href='https://www.linkedin.com/in/sof%C3%ADa-cheung-90056817a/'> Sofía Cheung </a></li>
+        <li><a href='https://www.linkedin.com/in/tim-assavarat-04b14717a/'> Tim Assavarat </a></li>
       </ul>
+      <form action='https://github.com/tassavarat/im_bored'>
+        <input className='glink' type='submit' value='view on Github' />
+      </form>
     </footer>
   </div>
 );

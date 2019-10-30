@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './snake.css';
 
-const SIZE = 11;
+let START = 0;
+const SIZE = 19;
 const MIN = 0;
 const mapper = {
   37: 'ArrowLeft',
@@ -18,21 +19,45 @@ const mapper = {
  *
  * Return: Pseudo-random number
  */
-function random (array) {
-  const grid = Array.from(Array(SIZE).keys());
+function random (snake, setFood) {
+  // if (!setFood && START) return;
 
-  // Check if both arrays were passed
-  if (array) {
-    // Make j variable, increment along w/ i
-    for (let i = 0; i < array.length; ++i) {
-      // Compare that both i and j not occupied
-      const idx = grid.indexOf(array[i]);
-      if (idx > -1) grid.splice(idx, 1);
+  let array = [];
+
+  if (snake) {
+    array = snake.tail.slice();
+    array.push(Object.assign({}, snake.head));
+    array.push(Object.assign({}, snake.neck));
+  } else {
+    array = [{ row: Math.floor(SIZE / 2), col: Math.floor(SIZE / 2) }];
+  }
+
+  const grid = [];
+  for (let row = 0; row < SIZE; ++row) {
+    for (let col = 0; col < SIZE; ++col) {
+      grid.push({ row, col });
     }
   }
-  // Generate number for row and col
-  // Return object or array with 2 values
-  return grid[Math.floor(Math.random() * (grid.length - 0)) + 0];
+
+  for (let i = 0; i < array.length; ++i) {
+    const idx = grid.findIndex(obj => obj.row === array[i].row &&
+      obj.col === array[i].col);
+    if (idx > -1) grid.splice(idx, 1);
+  }
+  const num = Math.floor(Math.random() * (grid.length));
+
+  if (!snake) return grid[num];
+
+  if (grid.length === 0) {
+    console.log('Grid filled');
+    return;
+  }
+  setFood(food =>
+    ({
+      ...food,
+      row: grid[num].row,
+      col: grid[num].col
+    }));
 }
 
 /**
@@ -42,14 +67,13 @@ function random (array) {
  * Return: Created grid
  */
 function initGrid () {
+  // if (START) return;
+
   const grid = [];
   for (let row = 0; row < SIZE; ++row) {
     const cols = [];
     for (let col = 0; col < SIZE; ++col) {
-      cols.push({
-        row,
-        col
-      });
+      cols.push({ row, col });
     }
     grid.push(cols);
   }
@@ -57,6 +81,8 @@ function initGrid () {
 }
 
 function initSnake () {
+  // if (START) return;
+
   return {
     head: {
       row: Math.floor(SIZE / 2),
@@ -71,28 +97,13 @@ function initSnake () {
   };
 }
 
-function initFood () {
-  return {
-    row: random(),
-    col: random()
-  };
-}
-
 function eatFood (snake, food, setSnake, setFood) {
+  if (START === 0) START = 1;
   if (snake.head.row !== food.row || snake.head.col !== food.col) {
     snakeCrash(snake, setSnake);
   } else if (snake.head.row === food.row && snake.head.col === food.col) {
-    const tailRow = [];
-    const tailCol = [];
-    for (let i = 0; i < snake.tail.length; ++i) {
-      tailRow.push(snake.tail[i].row);
-      tailCol.push(snake.tail[i].col);
-    }
-    // Pass both arrays to random, probably call here also
-    setFood(food =>
-      ({ ...food, row: random(tailRow), col: random(tailCol) }));
+    random(snake, setFood);
     snake.tail.push(snake.head);
-    // console.log('EATED AT', snake.head);
   }
 }
 
@@ -101,7 +112,7 @@ function snakeCrash (snake, setSnake) {
     snake.head.col < MIN || snake.head.col === SIZE ||
     snake.tail.find((e) =>
       e.row === snake.head.row && e.col === snake.head.col)) {
-    // console.log('died');
+    START = 0;
     setSnake(snake => (initSnake()));
   }
 }
@@ -115,7 +126,7 @@ function DisplayGrid () {
   // eslint-disable-next-line
   const [grid, setGrid] = useState(initGrid());
   const [snake, setSnake] = useState(initSnake());
-  const [food, setFood] = useState(initFood());
+  const [food, setFood] = useState(random());
   const direction = {
     left: {
       ...snake,
@@ -138,8 +149,6 @@ function DisplayGrid () {
       neck: { row: snake.head.row, col: snake.head.col }
     }
   };
-  // snakeCrash(snake, food, setSnake, setFood);
-  if (!food.row || !food.col) console.log('tail', snake.tail);
 
   const newDirection = e => {
     if (mapper[e.keyCode]) {
@@ -216,12 +225,15 @@ function DisplayGrid () {
  */
 function Display () {
   return (
-    <div className='game'>
+    <div className='snakegame'>
       <div className='wrapper'>
         <h1> Snake </h1>
         <div className='grid'>
           {DisplayGrid()}
         </div>
+      </div>
+      <div className='bottomText'>
+        Click main title to change games &#9757;
       </div>
     </div>
   );

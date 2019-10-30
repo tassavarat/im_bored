@@ -24,8 +24,10 @@ class Game extends React.Component {
    */
   render () {
     return (
-      <div className='game'>
+      <div className='tttgame'>
         <Board />
+        <div className='bText'> Click main title to change games &#9757;
+        </div>
       </div>
     );
   }
@@ -160,7 +162,7 @@ class Board extends React.Component {
       this.scores.tie++;
     }
 
-    if (gameStatus) turn = gameStatus + ' Click on a box to go play again';
+    if (gameStatus) turn = gameStatus + ' Click on a box to play again';
     else turn = 'You are X';
     // else turn = (this.state.playerTurn ? "X's " : "O's ") + 'turn';
 
@@ -169,7 +171,9 @@ class Board extends React.Component {
     return (
 
       <div className='space'>
-        <h2> Tic Tac Toe </h2>
+        <div className='ttt'>
+          <h2> Tic Tac Toe </h2>
+        </div>
         <div>Scores</div>
         <div className='scores'>{score}</div>
         <div className='board'>

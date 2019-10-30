@@ -5,8 +5,9 @@ import { NavLink } from 'react-router-dom';
 
 const App = () => (
   <div className='app'>
-    <nav>
-      <h1><NavLink to='/'>im bored</NavLink></h1>
+    <nav className='title'>
+      <h1><NavLink to='/'> Im Bored...</NavLink></h1>
+      <div className='instruction'> choose a game to play </div>
     </nav>
     <Main />
   </div>
