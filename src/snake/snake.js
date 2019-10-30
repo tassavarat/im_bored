@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './snake.css';
 
 let START = 0;
+let SCORE = 0;
 const SIZE = 19;
 const MIN = 0;
 const mapper = {
@@ -29,13 +30,18 @@ function random (snake, setFood) {
     array.push(Object.assign({}, snake.head));
     array.push(Object.assign({}, snake.neck));
   } else {
-    array = [{ row: Math.floor(SIZE / 2), col: Math.floor(SIZE / 2) }];
+    array = [{
+      row: Math.floor(SIZE / 2),
+      col: Math.floor(SIZE / 2)
+    }];
   }
 
   const grid = [];
   for (let row = 0; row < SIZE; ++row) {
     for (let col = 0; col < SIZE; ++col) {
-      grid.push({ row, col });
+      grid.push({
+        row, col
+      });
     }
   }
 
@@ -53,11 +59,7 @@ function random (snake, setFood) {
     return;
   }
   setFood(food =>
-    ({
-      ...food,
-      row: grid[num].row,
-      col: grid[num].col
-    }));
+    ({ ...food, row: grid[num].row, col: grid[num].col }));
 }
 
 /**
@@ -73,7 +75,10 @@ function initGrid () {
   for (let row = 0; row < SIZE; ++row) {
     const cols = [];
     for (let col = 0; col < SIZE; ++col) {
-      cols.push({ row, col });
+      cols.push({
+        row,
+        col
+      });
     }
     grid.push(cols);
   }
@@ -104,6 +109,7 @@ function eatFood (snake, food, setSnake, setFood) {
   } else if (snake.head.row === food.row && snake.head.col === food.col) {
     random(snake, setFood);
     snake.tail.push(snake.head);
+    ++SCORE;
   }
 }
 
@@ -113,7 +119,7 @@ function snakeCrash (snake, setSnake) {
     snake.tail.find((e) =>
       e.row === snake.head.row && e.col === snake.head.col)) {
     START = 0;
-    setSnake(snake => (initSnake()));
+    setSnake(snake => ({ ...snake, direction: null }));
   }
 }
 
@@ -151,7 +157,19 @@ function DisplayGrid () {
   };
 
   const newDirection = e => {
-    if (mapper[e.keyCode]) {
+    if (!snake.direction) {
+      SCORE = 0;
+      setSnake(snake => (initSnake()));
+      setSnake(snake => ({ ...snake, direction: mapper[e.keyCode] }));
+    } else if ((snake.direction === 'ArrowUp' ||
+      snake.direction === 'ArrowDown') &&
+      (mapper[e.keyCode] === 'ArrowLeft' ||
+        mapper[e.keyCode] === 'ArrowRight')) {
+      setSnake(snake => ({ ...snake, direction: mapper[e.keyCode] }));
+    } else if ((snake.direction === 'ArrowLeft' ||
+      snake.direction === 'ArrowRight') &&
+      (mapper[e.keyCode] === 'ArrowUp' ||
+        mapper[e.keyCode] === 'ArrowDown')) {
       setSnake(snake => ({ ...snake, direction: mapper[e.keyCode] }));
     }
   };
@@ -160,7 +178,7 @@ function DisplayGrid () {
     window.addEventListener('keydown', newDirection);
     return () =>
       window.removeEventListener('keydown', newDirection);
-  }, []);
+  }, [snake]);
 
   useEffect(() => {
     const onTick = () => {
@@ -174,9 +192,11 @@ function DisplayGrid () {
         setSnake(snake => (direction.down));
       }
       eatFood(snake, food, setSnake, setFood);
-      for (let i = snake.tail.length - 1; i > -1; --i) {
-        if (i > 0) snake.tail[i] = snake.tail[i - 1];
-        else snake.tail[i] = snake.head;
+      if (snake.direction) {
+        for (let i = snake.tail.length - 1; i > -1; --i) {
+          if (i > 0) snake.tail[i] = snake.tail[i - 1];
+          else snake.tail[i] = snake.head;
+        }
       }
     };
     const interval = setInterval(onTick, 100);
@@ -230,6 +250,9 @@ function Display () {
         <h1> Snake </h1>
         <div className='grid'>
           {DisplayGrid()}
+        </div>
+        <div className='scores'>
+          Points: {SCORE}
         </div>
       </div>
       <div className='bottomText'>
