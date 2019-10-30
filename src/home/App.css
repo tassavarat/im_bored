@@ -1,3 +1,11 @@
+@media screen 
+  and (device-width: 320px) 
+  and (device-height: 640px) 
+  and (-webkit-device-pixel-ratio: 2) 
+  and (orientation: portrait) {
+
+}
+
 html {
   background-color: #F2F2F2;
 }
@@ -111,6 +119,7 @@ h4 {
 footer ul {
   display: inline-block;
   width: 700px;
+  align-items: flex-end;
 }
 
 footer ul li {

@@ -237,12 +237,15 @@ function DisplayGrid () {
  */
 function Display () {
   return (
-    <div className='game'>
+    <div className='snakegame'>
       <div className='wrapper'>
         <h1> Snake </h1>
         <div className='grid'>
           {DisplayGrid()}
         </div>
+      </div>
+      <div className='bottomText'>
+        Click main title to change games &#9757;
       </div>
     </div>
   );
