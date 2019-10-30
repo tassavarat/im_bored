@@ -21,7 +21,6 @@ const mapper = {
  */
 function random (snake, setFood) {
   if (!setFood && START) return;
-  console.log('test');
 
   let array = [];
 
@@ -192,7 +191,7 @@ function DisplayGrid () {
     window.addEventListener('keydown', newDirection);
     return () =>
       window.removeEventListener('keydown', newDirection);
-  }, [snake]);
+  });
 
   useEffect(() => {
     const onTick = () => {
