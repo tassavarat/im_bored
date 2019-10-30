@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './snake.css';
 
 let START = 0;
-const SIZE = 11;
+const SIZE = 19;
 const MIN = 0;
 const mapper = {
   37: 'ArrowLeft',
@@ -19,38 +19,44 @@ const mapper = {
  *
  * Return: Pseudo-random number
  */
-function random (array, setFood) {
-  if (!setFood && START) return;
+function random (snake, setFood) {
+  // if (!setFood && START) return;
 
-  const row = Array.from(Array(SIZE).keys());
-  const col = Array.from(Array(SIZE).keys());
+  let array = [];
 
-  console.log('initial row', row);
-  console.log('initial col', col);
-  if (array) {
-    for (let i = 0; i < array.length; ++i) {
-      const rowIdx = row.indexOf(array[i]);
-      const colIdx = col.indexOf(array[i]);
-      if (rowIdx > -1) row.splice(rowIdx, 1);
-      if (colIdx > -1) col.splice(colIdx, 1);
-      console.log('row', row);
-      console.log('col', col);
-    }
+  if (snake) {
+    array = snake.tail.slice();
+    array.push(Object.assign({}, snake.head));
+    array.push(Object.assign({}, snake.neck));
   } else {
-    row.splice(Math.floor(SIZE / 2), 1);
-    col.splice(Math.floor(SIZE / 2), 1);
-
-    return {
-      row: row[Math.floor(Math.random() * (row.length - 0)) + 0],
-      col: col[Math.floor(Math.random() * (col.length - 0)) + 0]
-    };
+    array = [{ row: Math.floor(SIZE / 2), col: Math.floor(SIZE / 2) }];
   }
 
+  const grid = [];
+  for (let row = 0; row < SIZE; ++row) {
+    for (let col = 0; col < SIZE; ++col) {
+      grid.push({ row, col });
+    }
+  }
+
+  for (let i = 0; i < array.length; ++i) {
+    const idx = grid.findIndex(obj => obj.row === array[i].row &&
+      obj.col === array[i].col);
+    if (idx > -1) grid.splice(idx, 1);
+  }
+  const num = Math.floor(Math.random() * (grid.length));
+
+  if (!snake) return grid[num];
+
+  if (grid.length === 0) {
+    console.log('Grid filled');
+    return;
+  }
   setFood(food =>
     ({
       ...food,
-      row: row[Math.floor(Math.random() * (row.length - 0)) + 0],
-      col: col[Math.floor(Math.random() * (col.length - 0)) + 0]
+      row: grid[num].row,
+      col: grid[num].col
     }));
 }
 
@@ -61,16 +67,13 @@ function random (array, setFood) {
  * Return: Created grid
  */
 function initGrid () {
-  if (START) return;
+  // if (START) return;
 
   const grid = [];
   for (let row = 0; row < SIZE; ++row) {
     const cols = [];
     for (let col = 0; col < SIZE; ++col) {
-      cols.push({
-        row,
-        col
-      });
+      cols.push({ row, col });
     }
     grid.push(cols);
   }
@@ -78,7 +81,7 @@ function initGrid () {
 }
 
 function initSnake () {
-  if (START) return;
+  // if (START) return;
 
   return {
     head: {
@@ -99,20 +102,8 @@ function eatFood (snake, food, setSnake, setFood) {
   if (snake.head.row !== food.row || snake.head.col !== food.col) {
     snakeCrash(snake, setSnake);
   } else if (snake.head.row === food.row && snake.head.col === food.col) {
-    const tailRow = [];
-    const tailCol = [];
-    for (let i = 0; i < snake.tail.length; ++i) {
-      tailRow.push(snake.tail[i].row);
-      tailCol.push(snake.tail[i].col);
-    }
-    // Pass both arrays to random, probably call here also
-    /*
-    setFood(food =>
-      ({ ...food, row: random(tailRow), col: random(tailCol) }));
-    */
-    random(tailRow, setFood);
+    random(snake, setFood);
     snake.tail.push(snake.head);
-    // console.log('EATED AT', snake.head);
   }
 }
 
@@ -121,7 +112,6 @@ function snakeCrash (snake, setSnake) {
     snake.head.col < MIN || snake.head.col === SIZE ||
     snake.tail.find((e) =>
       e.row === snake.head.row && e.col === snake.head.col)) {
-    // console.log('died');
     START = 0;
     setSnake(snake => (initSnake()));
   }
@@ -159,8 +149,6 @@ function DisplayGrid () {
       neck: { row: snake.head.row, col: snake.head.col }
     }
   };
-  // snakeCrash(snake, food, setSnake, setFood);
-  // if (!food.row || !food.col) console.log('tail', snake.tail);
 
   const newDirection = e => {
     if (mapper[e.keyCode]) {
