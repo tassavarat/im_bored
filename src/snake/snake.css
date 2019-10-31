@@ -48,7 +48,7 @@
   background: #141414;
   grid-template-columns: repeat(19, 1fr);
   margin-bottom: 20px;
-  border-radius: 30px;
+  border-radius: 12px;
 }
 
 .food {
