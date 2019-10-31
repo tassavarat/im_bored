@@ -59,7 +59,7 @@ class Board extends React.Component {
    *
    * Return: Position of move for computer to make
    */
-  computerMove (strGrid) {
+  computerMove (strGrid, grid) {
     const options = {
       method: 'GET',
       url: `https://stujo-tic-tac-toe-stujo-v1.p.rapidapi.com/${strGrid}/O`,
@@ -68,13 +68,25 @@ class Board extends React.Component {
         'x-rapidapi-key': '9b15f452e0mshafc36b253ee9381p1ce860jsn98e739f1c98c'
       }
     };
+    const gridComp = Array.from(Array(9).keys());
+    const chance = 3;
 
-    return new Promise((resolve, reject) => {
-      request(options, (err, resp, body) => {
-        if (err) console.log(err);
-        else resolve(JSON.parse(body).recommendation);
+    if (!Math.floor(Math.random() * chance)) {
+      for (let i = 0; i < grid.length; ++i) {
+        if (grid[i] === 'X' || grid[i] === 'O') {
+          gridComp.splice(gridComp.findIndex((e) =>
+            e === i), 1);
+        }
+      }
+      return gridComp[Math.floor(Math.random() * (gridComp.length))];
+    } else {
+      return new Promise((resolve, reject) => {
+        request(options, (err, resp, body) => {
+          if (err) console.log(err);
+          else resolve(JSON.parse(body).recommendation);
+        });
       });
-    });
+    }
   }
 
   /**
@@ -123,7 +135,7 @@ class Board extends React.Component {
     let strGrid = grid.slice();
     for (const i in strGrid) if (!strGrid[i]) strGrid[i] = '-';
     strGrid = strGrid.join('');
-    const move = await this.computerMove(strGrid);
+    const move = await this.computerMove(strGrid, grid);
     grid[move] = 'O';
     this.setState({
       grid: grid,
