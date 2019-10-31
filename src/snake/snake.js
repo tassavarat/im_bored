@@ -3,6 +3,7 @@ import './snake.css';
 
 let START = 0;
 let SCORE = 0;
+let MOVED = 0;
 const SIZE = 19;
 const MIN = 0;
 const mapper = {
@@ -174,17 +175,18 @@ function DisplayGrid () {
       SCORE = 0;
       setSnake(snake => (initSnake()));
       setSnake(snake => ({ ...snake, direction: mapper[e.keyCode] }));
-    } else if ((snake.direction === 'ArrowUp' ||
+    } else if (MOVED === 1 && (snake.direction === 'ArrowUp' ||
       snake.direction === 'ArrowDown') &&
       (mapper[e.keyCode] === 'ArrowLeft' ||
         mapper[e.keyCode] === 'ArrowRight')) {
       setSnake(snake => ({ ...snake, direction: mapper[e.keyCode] }));
-    } else if ((snake.direction === 'ArrowLeft' ||
+    } else if (MOVED === 1 && (snake.direction === 'ArrowLeft' ||
       snake.direction === 'ArrowRight') &&
       (mapper[e.keyCode] === 'ArrowUp' ||
         mapper[e.keyCode] === 'ArrowDown')) {
       setSnake(snake => ({ ...snake, direction: mapper[e.keyCode] }));
     }
+    MOVED = 0;
   };
 
   useEffect(() => {
@@ -204,6 +206,8 @@ function DisplayGrid () {
       } else if (snake.direction === 'ArrowDown') {
         setSnake(snake => (direction.down));
       }
+      MOVED = 1;
+
       eatFood(snake, food, setSnake, setFood);
       if (snake.direction) {
         for (let i = snake.tail.length - 1; i > -1; --i) {
