@@ -14,29 +14,14 @@ const mapper = {
 };
 
 /**
- * random - Generates random number not contained within snake
- * @snake: snake object
- * @setFood: Function to modify food
+ * randGrid - Generates array containing potential food positions
+ * @snakePos: Array with all snake positions
  *
- * Return: Pseudo-random number
+ * Return: Generated array
  */
-function random (snake, setFood) {
-  if (!setFood && START) return;
-
-  let snakePos = [];
-
-  if (snake) {
-    snakePos = snake.tail.slice();
-    snakePos.push(Object.assign({}, snake.head));
-    snakePos.push(Object.assign({}, snake.neck));
-  } else {
-    snakePos = [{
-      row: Math.floor(SIZE / 2),
-      col: Math.floor(SIZE / 2)
-    }];
-  }
-
+function randGrid (snakePos) {
   const grid = [];
+
   for (let row = 0; row < SIZE; ++row) {
     for (let col = 0; col < SIZE; ++col) {
       grid.push({
@@ -50,9 +35,31 @@ function random (snake, setFood) {
       obj.col === snakePos[i].col);
     if (idx > -1) grid.splice(idx, 1);
   }
+
+  return grid;
+}
+
+/**
+ * random - Generates random number not contained within snake
+ * @snake: snake object
+ * @setFood: Function to modify food
+ *
+ * Return: Pseudo-random number
+ */
+function random (snake, setFood) {
+  if (!setFood && START) return;
+
+  let snakePos = [];
+
+  if (setFood) {
+    snakePos = snake.tail.slice();
+    snakePos.push(Object.assign({}, snake.head));
+    snakePos.push(Object.assign({}, snake.neck));
+  }
+  const grid = randGrid(snakePos);
   const randNum = Math.floor(Math.random() * (grid.length));
 
-  if (!snake) return grid[randNum];
+  if (!setFood) return grid[randNum];
 
   if (grid.length === 0) {
     console.log('Grid filled');
@@ -145,7 +152,10 @@ function DisplayGrid () {
   const [snake, setSnake] = useState(initSnake());
 
   !snake.direction ? START = 0 : START = 1;
-  const [food, setFood] = useState(random());
+  const [food, setFood] = useState(random([{
+    row: Math.floor(SIZE / 2),
+    col: Math.floor(SIZE / 2)
+  }]));
   const direction = {
     left: {
       ...snake,
