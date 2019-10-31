@@ -22,14 +22,14 @@ const mapper = {
 function random (snake, setFood) {
   if (!setFood && START) return;
 
-  let array = [];
+  let snakePos = [];
 
   if (snake) {
-    array = snake.tail.slice();
-    array.push(Object.assign({}, snake.head));
-    array.push(Object.assign({}, snake.neck));
+    snakePos = snake.tail.slice();
+    snakePos.push(Object.assign({}, snake.head));
+    snakePos.push(Object.assign({}, snake.neck));
   } else {
-    array = [{
+    snakePos = [{
       row: Math.floor(SIZE / 2),
       col: Math.floor(SIZE / 2)
     }];
@@ -44,21 +44,21 @@ function random (snake, setFood) {
     }
   }
 
-  for (let i = 0; i < array.length; ++i) {
-    const idx = grid.findIndex(obj => obj.row === array[i].row &&
-      obj.col === array[i].col);
+  for (let i = 0; i < snakePos.length; ++i) {
+    const idx = grid.findIndex(obj => obj.row === snakePos[i].row &&
+      obj.col === snakePos[i].col);
     if (idx > -1) grid.splice(idx, 1);
   }
-  const num = Math.floor(Math.random() * (grid.length));
+  const randNum = Math.floor(Math.random() * (grid.length));
 
-  if (!snake) return grid[num];
+  if (!snake) return grid[randNum];
 
   if (grid.length === 0) {
     console.log('Grid filled');
     return;
   }
   setFood(food =>
-    ({ ...food, row: grid[num].row, col: grid[num].col }));
+    ({ ...food, row: grid[randNum].row, col: grid[randNum].col }));
 }
 
 /**
