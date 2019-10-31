@@ -3,6 +3,7 @@ A website to play classic retro games
 
 
 Holberton School's foundations final project made with Javascript React, HTML and CSS.
+Visit our website at https://imbored-games.herokuapp.com/
 
 ## Technologies
 
