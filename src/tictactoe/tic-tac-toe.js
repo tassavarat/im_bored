@@ -68,6 +68,7 @@ class Board extends React.Component {
         'x-rapidapi-key': '9b15f452e0mshafc36b253ee9381p1ce860jsn98e739f1c98c'
       }
     };
+    /*
     const gridComp = Array.from(Array(9).keys());
     const chance = 3;
 
@@ -79,14 +80,15 @@ class Board extends React.Component {
         }
       }
       return gridComp[Math.floor(Math.random() * (gridComp.length))];
-    } else {
-      return new Promise((resolve, reject) => {
-        request(options, (err, resp, body) => {
-          if (err) console.log(err);
-          else resolve(JSON.parse(body).recommendation);
-        });
+    */
+    // } else {
+    return new Promise((resolve, reject) => {
+      request(options, (err, resp, body) => {
+        if (err) console.log(err);
+        else resolve(JSON.parse(body).recommendation);
       });
-    }
+    });
+    // }
   }
 
   /**
