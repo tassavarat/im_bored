@@ -96,7 +96,6 @@ class Board extends React.Component {
    */
   gameEnd () {
     const { grid, turnCount } = this.state;
-    if (turnCount === 5) return 'It\'s a tie!';
     const win = [
       [0, 1, 2],
       [3, 4, 5],
@@ -114,6 +113,7 @@ class Board extends React.Component {
         return grid[a] + ' wins!';
       }
     }
+    if (turnCount === 5) return 'It\'s a tie!';
     return null;
   }
 
@@ -132,6 +132,10 @@ class Board extends React.Component {
 
     // grid[i] = this.state.playerTurn ? 'X' : 'O';
     grid[i] = 'X';
+    this.setState({
+      grid: grid,
+      turnCount: turnCount
+    });
     let strGrid = grid.slice();
     for (const i in strGrid) if (!strGrid[i]) strGrid[i] = '-';
     strGrid = strGrid.join('');
