@@ -59,39 +59,42 @@ class Board extends React.Component {
    *
    * Return: Position of move for computer to make
    */
-  computerMove (strGrid, grid) {
-    const options = {
-      method: 'GET',
-      url: `https://stujo-tic-tac-toe-stujo-v1.p.rapidapi.com/${strGrid}/O`,
+  computerMove (strGrid, grid, turnCount) {
+    for (const i in strGrid) if (!strGrid[i]) strGrid[i] = '-';
+    strGrid = strGrid.join('');
+
+    let r = async() => {
+      await fetch(`https://stujo-tic-tac-toe-stujo-v1.p.rapidapi.com/${strGrid}/O`,{
       headers: {
         'x-rapidapi-host': 'stujo-tic-tac-toe-stujo-v1.p.rapidapi.com',
         'x-rapidapi-key': '9b15f452e0mshafc36b253ee9381p1ce860jsn98e739f1c98c'
       }
-    };
-    /*
-    const gridComp = Array.from(Array(9).keys());
-    const chance = 3;
+      })
+        .catch(err => console.log(err))
+        .then(res => res.json())
+        .then(result => {
+          grid[result.recommendation] = 'O';
+          this.setState({
+            grid: grid,
+            turnCount: turnCount + 1
+          });
+        })
+    }
 
-    if (!Math.floor(Math.random() * chance)) {
-      for (let i = 0; i < grid.length; ++i) {
-        if (grid[i] === 'X' || grid[i] === 'O') {
-          gridComp.splice(gridComp.findIndex((e) =>
-            e === i), 1);
-        }
+    let move = 0;
+    if (turnCount % 2 === 0) {
+      move = Math.floor(Math.random() * (8 - 0 + 1) + 0);
+      if (grid[move] == null) {
+        return move;
       }
-      return gridComp[Math.floor(Math.random() * (gridComp.length))];
-    */
-    // } else {
-    return new Promise((resolve, reject) => {
-      request(options, (err, resp, body) => {
-        if (err) console.log(err);
-        else resolve(JSON.parse(body).recommendation);
-      });
-    });
-    // }
+    }
+    r();
   }
 
-  /**
+  /* def swap(self, a, b):
+        temp = a
+        a = b
+        b = temp*
    * gameEnd - Checks for tie or winner
    *
    * Return: String of game ending condition or null if game not over
@@ -126,28 +129,28 @@ class Board extends React.Component {
   async click (i) {
     const grid = this.state.grid.slice();
     const turnCount = this.state.turnCount;
-    if (this.gameEnd()) {
+    if (await this.gameEnd()) {
       this.setState(this.initialState);
       return;
     }
     if (grid[i]) return;
 
-    // grid[i] = this.state.playerTurn ? 'X' : 'O';
     grid[i] = 'X';
     this.setState({
       grid: grid,
       turnCount: turnCount
     });
-    let strGrid = grid.slice();
-    for (const i in strGrid) if (!strGrid[i]) strGrid[i] = '-';
-    strGrid = strGrid.join('');
-    const move = await this.computerMove(strGrid, grid);
-    grid[move] = 'O';
-    this.setState({
-      grid: grid,
-      turnCount: turnCount + 1
-      // playerTurn: !this.state.playerTurn
-    });
+    if (await !this.gameEnd()) {
+      let strGrid = grid.slice();
+      let move = await this.computerMove(strGrid, grid, turnCount) 
+      if (move) {
+        grid[move] = 'O'
+        this.setState({
+          grid: grid,
+          turnCount: turnCount + 1
+        });
+      }
+    }
   }
 
   /**
@@ -173,17 +176,16 @@ class Board extends React.Component {
   render () {
     const gameStatus = this.gameEnd();
     let turn;
-    if (this.gameEnd() && this.gameEnd().startsWith('X')) {
+    if (gameStatus && gameStatus.startsWith('X')) {
       this.scores.x++;
-    } else if (this.gameEnd() && this.gameEnd().startsWith('O')) {
+    } else if (gameStatus && gameStatus.startsWith('O')) {
       this.scores.o++;
-    } else if (this.gameEnd() && this.gameEnd().startsWith('I')) {
+    } else if (gameStatus && gameStatus.startsWith('I')) {
       this.scores.tie++;
     }
 
     if (gameStatus) turn = gameStatus + ' Click on a box to play again';
     else turn = 'You are X';
-    // else turn = (this.state.playerTurn ? "X's " : "O's ") + 'turn';
 
     const score = 'X: ' + this.scores.x + ' | Ties: ' + this.scores.tie + ' | O: ' + this.scores.o;
 
