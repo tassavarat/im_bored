@@ -1,6 +1,5 @@
 import React from 'react';
 import './tic-tac-toe.css';
-const request = require('request');
 
 /**
  * Square - Updates button tag on click
