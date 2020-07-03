@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch, NavLink, Route } from 'react-router-dom';
 import Game from '../tictactoe/tic-tac-toe.js';
 import Display from '../snake/snake.js';
+import Sudoku from '../sudoku/sudoku.js';
 import './App.css';
 
 const Home = () => (
@@ -9,6 +10,7 @@ const Home = () => (
     <ul className='card-nav'>
       <li className='card'><NavLink to='/ticTacToe'>Tic Tac Toe</NavLink></li>
       <li className='card'><NavLink to='/snake'>Snake</NavLink></li>
+      <li className='card'><NavLink to='/sudoku'>Sudoku</NavLink></li>
     </ul>
     <footer className='home-footer'>
       <h2> About </h2>
@@ -59,6 +61,12 @@ const snake = () => (
   </div>
 );
 
+const sudoku = () => (
+  <div className='sudoku'>
+    <Sudoku />
+  </div>
+);
+
 const about = () => (
   <div className='about'>
     <div className='box'>
@@ -78,6 +86,7 @@ const Main = () => (
     <Route exact path='/' component={Home} />
     <Route exact path='/ticTacToe' component={ticTacToe} />
     <Route exact path='/snake' component={snake} />
+    <Route exact path='/sudoku' component={sudoku} />
     <Route exact path='/about' component={about} />
   </Switch>
 );
