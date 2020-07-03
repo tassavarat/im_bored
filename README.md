@@ -4,8 +4,11 @@ Visit our website at https://imbored-games.herokuapp.com/
 
 ## How to use
 1. Clone repository
-2. Run npm start (in root directory of the project)
-3. View in browser at `http://localhost:3000/`
+2. Go to `im_bored` folder
+3. Run `npm install` to install all dependencies
+4. Run `npm run build` to build the project
+5. Run `npm start` to start application
+6. View in browser at `http://localhost:3000/`
 
 ## Features
 ### Home Page
@@ -36,9 +39,11 @@ Our implementation of the snake game allows a single player to control the snake
 
 ### Sudoku
 
-![Sudoku](https://imgur.com/undefined)
+![Sudoku](https://i.imgur.com/yYnVepg.png)
 
 For the development of this Sudoku game, a puzzle board is generated. A user has the option of choosing a number 1-9 from a menu of numbers. Once a number is selected, the user can now click on any white cell inside the puzzle board and the selected number will appear there.
+
+[view github file](./src/sudoku/sudoku.js)
 
 ## About
 This project was inspired by the retro style and all online gaming websites. We made I'm Bored with the idea of being able to play games as easily as going to a website, without the need of loggin in.
