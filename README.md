@@ -1,13 +1,11 @@
 # I'm Bored
-A website to play classic retro games
-
-
-Holberton School's foundations final project made with Javascript React, HTML and CSS.
+A website to play classic retro games made with Javascript React, HTML and CSS.
 Visit our website at https://imbored-games.herokuapp.com/
 
-## Technologies
-
-This website was made by using Javascript React, HTML and CSS. Deployed with Heroku.
+## How to use
+1. Clone repository
+2. Run npm start (in root directory of the project)
+3. View in browser at `http://localhost:3000/`
 
 ## Features
 ### Home Page
@@ -36,6 +34,11 @@ Our implementation of the snake game allows a single player to control the snake
 
 [view github file](./src/snake/snake.js)
 
+### Sudoku
+
+![Sudoku](https://imgur.com/undefined)
+
+For the development of this Sudoku game, a puzzle board is generated. A user has the option of choosing a number 1-9 from a menu of numbers. Once a number is selected, the user can now click on any white cell inside the puzzle board and the selected number will appear there.
 
 ## About
 This project was inspired by the retro style and all online gaming websites. We made I'm Bored with the idea of being able to play games as easily as going to a website, without the need of loggin in.
