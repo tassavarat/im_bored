@@ -35,8 +35,6 @@ function cellOnClick (grid, i, j, selectedNum) {
   const g = JSON.parse(JSON.stringify(grid));
   if (g[i][j] !== '.') g[i][j] = '.';
   else g[i][j] = selectedNum;
-  console.log('selectedNum', selectedNum, g
-  )
   return g;
 }
 
@@ -85,10 +83,6 @@ function Board () {
   function updateCell (payload) {
     dispatch({ type: 'update', payload: payload });
   }
-
-  useEffect(() => {
-    console.log('grid', grid)
-  }, [grid])
 
   return (
     <div className='container'>
