@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from 'react';
+import React, { useState, useReducer, useEffect } from 'react';
 import { validatePuzzle, sudokuSolver, generatePuzzle } from './sudoku-solver';
 import './sudoku.css';
 
@@ -31,9 +31,12 @@ function MappingNums (props) {
  * @param {integer} selectedNum - new value of the cell
  */
 function cellOnClick (grid, i, j, selectedNum) {
-  const g = grid.slice();
+ 
+  const g = JSON.parse(JSON.stringify(grid));
   if (g[i][j] !== '.') g[i][j] = '.';
   else g[i][j] = selectedNum;
+  console.log('selectedNum', selectedNum, g
+  )
   return g;
 }
 
@@ -82,6 +85,10 @@ function Board () {
   function updateCell (payload) {
     dispatch({ type: 'update', payload: payload });
   }
+
+  useEffect(() => {
+    console.log('grid', grid)
+  }, [grid])
 
   return (
     <div className='container'>
