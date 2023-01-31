@@ -1,5 +1,5 @@
 #! /usr/bin/env node
-import { validatePuzzle, sudokuSolver, generatePuzzle } from './sudoku-solver';
+import { sudokuSolver, generatePuzzle } from './sudoku-solver';
 
 
 let a = generatePuzzle();

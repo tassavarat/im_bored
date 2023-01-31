@@ -266,11 +266,11 @@ function DisplayGrid () {
 }
 
 /**
- * Display - Displays game
+ * Snake - Displays game
  *
  * Return: HTML content
  */
-function Display () {
+function Snake () {
   return (
     <div className='snakegame'>
       <div className='wrapper'>
@@ -291,4 +291,4 @@ function Display () {
   );
 }
 
-export default Display;
+export default Snake;
