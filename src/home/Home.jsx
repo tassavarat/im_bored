@@ -8,6 +8,7 @@ const Home = () => (
       <li className='card'><Link to='/tictactoe'>Tic Tac Toe</Link></li>
       <li className='card'><Link to='/snake'>Snake</Link></li>
       <li className='card'><Link to='/sudoku'>Sudoku</Link></li>
+      <li className='card'><Link to='/memory'>Memory Game</Link></li>
     </ul>
     <footer className='home-footer'>
       <h2> About </h2>

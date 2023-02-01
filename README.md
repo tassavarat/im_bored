@@ -7,10 +7,9 @@ _The app is not longer deployed_
 
 1. Clone repository
 2. Go to `im_bored` folder
-3. Run `npm install` to install all dependencies
-4. Run `npm run build` to build the project
-5. Run `npm start` to start application
-6. View in browser at `http://localhost:3000/`
+3. Run `npm i` to install all dependencies
+4. Run `npm start dev` to start application
+5. View in browser
 
 ## Features
 

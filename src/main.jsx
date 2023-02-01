@@ -10,6 +10,7 @@ import TicTacToe from './tictactoe/tic-tac-toe'
 import Snake from './snake/snake'
 import Sudoku from './sudoku/sudoku'
 import About from './about/About'
+import Memory from './memory/Memory'
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
   {
     path: '/about',
     element: <About />
+  },
+  { 
+    path: '/memory',
+    element: <Memory />
   }
 ])
 
