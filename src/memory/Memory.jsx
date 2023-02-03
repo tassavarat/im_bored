@@ -34,55 +34,72 @@ const createBoard = () => {
 /**
  * updates the board with user input
  */
-const updateBoard = () => {
+const updateBoard = (board, coordinates) => {
+  const char = board[coordinates?.row][coordinates?.col]
 
+  console.log('coordinates', board, coordinates)
+  const boardCopy = JSON.parse(JSON.stringify(board))
+  boardCopy[coordinates?.row][coordinates?.col] = char + 'x'
+  console.log('bAAA', board)
+  return boardCopy
 }
 
 // createBoard -> create board with highlighted cells
 // checkBoard -> check if selected cells are equal to the highlighted cells
-const reducer = (grid, action) => {
-  switch (action) {
+const reducer = (board, action) => {
+  switch (action.type) {
     case 'createBoard': 
       return createBoard()
     case 'updateBoard':
-      return updateBoard()
+      return updateBoard(board, action.payload)
+    default:
+    throw new Error('Invalid action')
   }
 }
 
 const Memory = () => {
-  const [grid, dispatch] = useReducer(reducer, [])
+  const [board, dispatch] = useReducer(reducer, [])
   const [showHighlightedCells, setShowHighlightedCells] = useState(false)
 
   /**
    * create the board and display highlighted cells to memorize on a timer.
    */
   const startGame = () => {
-    dispatch('createBoard')
+    dispatch({type: 'createBoard'})
     setShowHighlightedCells(true)
     setTimeout(() => {
       setShowHighlightedCells(false)
     }, 4000)
   }
 
-  const cellOnClick = (row, col) => {
-
+  const cellOnClick = (row, col) => { 
+    dispatch({type: 'updateBoard', payload: {row, col}})
   }
 
   return (
     <div>
       <div className='m-board-wrapper'>
         <h2>Memory Game</h2>
-        {!grid?.length ? (
+        {!board?.length ? (
           <div className='start'>
             <button onClick={startGame}>Start</button>
           </div>
         ) : (
           <div className='m-board'> 
-            {grid && grid.map((_, rowx) => (
-              <div className='row' key={`row-${rowx}`}>
-                {grid[rowx] && grid[rowx].map((col, colIdx) => (
-                  <div className={`m-cell ${showHighlightedCells && col === '*' ? 'highlighted' : 'm-cell'}`} key={`col-${colIdx}`}>{col}</div>
-                ))}
+            {board && board.map((_, rowIdx) => (
+              <div className='row' key={`row-${rowIdx}`}>
+                {board[rowIdx] && board[rowIdx].map((col, colIdx) => {
+                  let cellClassName = 'm-cell'
+                  if (col === 'x') cellClassName += ' userSelected'
+                  if (col === '*' && showHighlightedCells) cellClassName += ' highlighted'
+                  
+                  return (
+                  <div
+                    key={`cell-${colIdx}`}
+                    className={cellClassName}
+                    onClick={() => cellOnClick(rowIdx, colIdx)}
+                  >{col}</div>
+                )})}
               </div>
             ))}
           </div>

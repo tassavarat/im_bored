@@ -48,3 +48,7 @@
 .highlighted {
   background-color: rgb(82, 127, 252);
 }
+
+.userSelected {
+  background-color: rgb(143, 143, 143);
+}
