@@ -1,0 +1,50 @@
+.m-board-wrapper {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.m-board {
+  display: flex;
+  position: relative;
+  width: max-content;
+  height: min-content;
+  z-index: 0;
+  border: 2px solid black;
+  border-radius: 0.5rem;
+}
+
+.start {
+  width: 36rem;
+  height: 36rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.178);
+  border: 2px solid black;
+  border-radius: 0.5rem;
+}
+
+.m-board-wrapper button {
+  border-radius: 1.7rem;
+  background-color: black;
+  color: white;
+  text-decoration: none;
+  border: none;
+  margin-right: 1rem;
+  padding: 1.5rem;
+  cursor: pointer;
+  width: 8rem;
+  height: 6rem;
+}
+
+.m-cell {
+  width: 9rem;
+  height: 9rem;
+  border: 2px solid black;
+  cursor: pointer;
+}
+
+.highlighted {
+  background-color: rgb(82, 127, 252);
+}
