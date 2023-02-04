@@ -35,12 +35,38 @@ const createBoard = () => {
  * updates the board with user input
  */
 const updateBoard = (board, coordinates) => {
-  const char = board[coordinates?.row][coordinates?.col]
-
-  console.log('coordinates', board, coordinates)
+  const str = board[coordinates?.row][coordinates?.col]
   const boardCopy = JSON.parse(JSON.stringify(board))
-  boardCopy[coordinates?.row][coordinates?.col] = char + 'x'
-  console.log('bAAA', board)
+  
+  // delete 'x' if cell is clicked again
+  if (str[1] === 'x') {
+    boardCopy[coordinates?.row][coordinates?.col] = str[0]
+  } else {
+    // append 'x' to string
+    boardCopy[coordinates?.row][coordinates?.col] = str + 'x'
+  }
+  
+  return boardCopy
+}
+
+const checkBoard = (board) => {
+  // iterate board and check if all '*' cells have an 'x'
+  const WRONG = 'wrong'
+  const CORRECT = 'correct'
+  const MISSING = 'missing'
+
+  const boardCopy = JSON.parse(JSON.stringify(board))
+  let isCorrect = true
+
+  for (let row = 0; row < board.length; row++) {
+    for (let col = 0; col < board[row].length; col++) {
+      if (board[row][col] === '.x') boardCopy[row][col] = WRONG
+      if (board[row][col] === '*x') boardCopy[row][col] = CORRECT
+      if (board[row][col] === '*') board[row][col] = MISSING
+
+      if (board[row][col] === 'missing' || board[row][col] === 'wrong') isCorrect = false
+    }
+  }
   return boardCopy
 }
 
@@ -52,6 +78,10 @@ const reducer = (board, action) => {
       return createBoard()
     case 'updateBoard':
       return updateBoard(board, action.payload)
+    case 'checkBoard':
+      return checkBoard(board)
+    case 'emptyBoard':
+      return []
     default:
     throw new Error('Invalid action')
   }
@@ -60,6 +90,7 @@ const reducer = (board, action) => {
 const Memory = () => {
   const [board, dispatch] = useReducer(reducer, [])
   const [showHighlightedCells, setShowHighlightedCells] = useState(false)
+  const [score, setScore] = useState(0)
 
   /**
    * create the board and display highlighted cells to memorize on a timer.
@@ -69,12 +100,12 @@ const Memory = () => {
     setShowHighlightedCells(true)
     setTimeout(() => {
       setShowHighlightedCells(false)
-    }, 4000)
+    }, 2000)
   }
 
-  const cellOnClick = (row, col) => { 
-    dispatch({type: 'updateBoard', payload: {row, col}})
-  }
+  const onRestart = () => (dispatch({type: 'emptyBoard'}))
+  const cellOnClick = (row, col) => (dispatch({type: 'updateBoard', payload: {row, col}}))
+  const onCheck = () => (dispatch({type: 'checkBoard'}))
 
   return (
     <div>
@@ -85,24 +116,33 @@ const Memory = () => {
             <button onClick={startGame}>Start</button>
           </div>
         ) : (
-          <div className='m-board'> 
+          <>
+            <div className='score'>Score: {score}</div>
+            <div className='m-board'> 
             {board && board.map((_, rowIdx) => (
               <div className='row' key={`row-${rowIdx}`}>
                 {board[rowIdx] && board[rowIdx].map((col, colIdx) => {
-                  let cellClassName = 'm-cell'
-                  if (col === 'x') cellClassName += ' userSelected'
-                  if (col === '*' && showHighlightedCells) cellClassName += ' highlighted'
+                  let cellClassName = col
+                  const clickEnabled = !showHighlightedCells
+
+                  if (col[1] === 'x') cellClassName = ' userSelected'
+                  if (col === '*' && showHighlightedCells) cellClassName = 'cursor-disabled highlighted'
                   
                   return (
                   <div
                     key={`cell-${colIdx}`}
-                    className={cellClassName}
-                    onClick={() => cellOnClick(rowIdx, colIdx)}
+                    className={`m-cell ${clickEnabled ? 'click-enabled' : ''} ${cellClassName}`}
+                    onClick={() => clickEnabled && cellOnClick(rowIdx, colIdx)}
                   >{col}</div>
                 )})}
               </div>
             ))}
-          </div>
+            </div>
+            <div className='button-section'>
+              <button onClick={onCheck}>Check</button>
+              <button onClick={onRestart}>Restart</button>
+            </div>
+          </>
         )}
       </div>
     </div>
