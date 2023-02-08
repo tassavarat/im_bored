@@ -27,15 +27,11 @@ I'm Bored home page displays a collection of game options and a made by section.
 
 Our implementation of the Tic Tac Toe game allows a single player to play against a computer. We make a request to the Tic Tac Toe API to generate a position in our grid which will be the computer's move. A score section shows how many times a player has won.
 
-[view github file](./src/tictactoe/tic-tac-toe.js)
-
 ### Snake
 
 ![Snake](https://i.imgur.com/Vr1DSjz.png)
 
 Our implementation of the snake game allows a single player to control the snake which appears as a white circle. The player may then control the snake's movements with keyboard arrow keys. The goal is to eat as many red circles as possible without hitting the grid's edges or colliding with the snake's tail.
-
-[view github file](./src/snake/snake.js)
 
 ### Sudoku
 
@@ -43,7 +39,9 @@ Our implementation of the snake game allows a single player to control the snake
 
 For the development of this Sudoku game, a puzzle board is generated. A user has the option of choosing a number 1-9 from a menu of numbers. Once a number is selected, the user can now click on any white cell inside the puzzle board and the selected number will appear there.
 
-[view github file](./src/sudoku/sudoku.js)
+### Memory Game
+
+This simple memory game shows random highlighted tiles for a few seconds. The player can then click on the tiles and check if they match the tiles that were previously highlighted.
 
 ## About
 
