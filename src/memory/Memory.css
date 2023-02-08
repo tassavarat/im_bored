@@ -45,6 +45,9 @@
   width: 9rem;
   height: 9rem;
   border: 2px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .m-cell.click-enabled {
@@ -64,10 +67,14 @@
 }
 
 .missing {
-  background-color: rgb(190, 202, 144);
+  background-color: rgb(192, 186, 132);
 }
 
 .button-section {
   padding-top: 2rem;
   display: flex;
+}
+
+.m-board-wrapper .result {
+  padding: 2rem;
 }

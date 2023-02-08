@@ -1,5 +1,10 @@
 import React, { useState, useReducer, useEffect } from 'react'
+import { BsCheckLg, BsXLg } from 'react-icons/bs'
 import './Memory.css'
+
+const WRONG = 'wrong'
+const CORRECT = 'correct'
+const MISSING = 'missing'
 
 /**
  * 
@@ -20,7 +25,7 @@ const getRandomNum = (min, max) => {
  * @returns board with empty and highlighted cells
  */
 const createBoard = () => {
-  const board = Array.from(Array(4), _ => Array(4).fill('.'))
+  const board = Array.from(Array(4), () => Array(4).fill('.'))
   const numOfHighlightedCells =  6
   for (let i = 0; i <= numOfHighlightedCells; i++) {
     const randRow = getRandomNum(0, 3)
@@ -49,24 +54,31 @@ const updateBoard = (board, coordinates) => {
   return boardCopy
 }
 
-const checkBoard = (board) => {
+/**
+ * 
+ * @param {*} board 
+ * @param {boolean} returnBoard 
+ * @returns true if board is correct, false if there is a mistake or the board
+ */
+const checkBoard = (board, setScore) => {
   // iterate board and check if all '*' cells have an 'x'
-  const WRONG = 'wrong'
-  const CORRECT = 'correct'
-  const MISSING = 'missing'
+  
 
   const boardCopy = JSON.parse(JSON.stringify(board))
   let isCorrect = true
-
+ 
   for (let row = 0; row < board.length; row++) {
     for (let col = 0; col < board[row].length; col++) {
       if (board[row][col] === '.x') boardCopy[row][col] = WRONG
       if (board[row][col] === '*x') boardCopy[row][col] = CORRECT
       if (board[row][col] === '*') board[row][col] = MISSING
 
-      if (board[row][col] === 'missing' || board[row][col] === 'wrong') isCorrect = false
+      if (board[row][col] === WRONG || board[row][col] === MISSING) isCorrect = false
     }
   }
+
+  if (isCorrect) setScore()
+
   return boardCopy
 }
 
@@ -79,7 +91,7 @@ const reducer = (board, action) => {
     case 'updateBoard':
       return updateBoard(board, action.payload)
     case 'checkBoard':
-      return checkBoard(board)
+      return checkBoard(board, action.payload)
     case 'emptyBoard':
       return []
     default:
@@ -91,11 +103,19 @@ const Memory = () => {
   const [board, dispatch] = useReducer(reducer, [])
   const [showHighlightedCells, setShowHighlightedCells] = useState(false)
   const [score, setScore] = useState(0)
+  const [isChecked, setIsChecked] = useState(false)
+  const [result, setResult] = useState('Incorrect :C')
+
+  useEffect(() => {
+    setResult('Winner!')
+  }, [score])
 
   /**
    * create the board and display highlighted cells to memorize on a timer.
    */
   const startGame = () => {
+    setIsChecked(false)
+    setResult('Incorrect :C')
     dispatch({type: 'createBoard'})
     setShowHighlightedCells(true)
     setTimeout(() => {
@@ -105,19 +125,35 @@ const Memory = () => {
 
   const onRestart = () => (dispatch({type: 'emptyBoard'}))
   const cellOnClick = (row, col) => (dispatch({type: 'updateBoard', payload: {row, col}}))
-  const onCheck = () => (dispatch({type: 'checkBoard'}))
+  const onCheck = () => {
+    dispatch({type: 'checkBoard', payload: () => setScore(score + 1)})
+    setIsChecked(true)
+  }
+
+  const getCheckIcon = (status) => {
+    switch(status) {
+      case CORRECT:
+        return <BsCheckLg />
+      case WRONG: 
+      case MISSING:
+        return <BsXLg />
+      default:
+        return ''
+    }
+  }
 
   return (
     <div>
       <div className='m-board-wrapper'>
         <h2>Memory Game</h2>
+        <div className='score'>Score: {score}</div>
+
         {!board?.length ? (
           <div className='start'>
             <button onClick={startGame}>Start</button>
           </div>
         ) : (
           <>
-            <div className='score'>Score: {score}</div>
             <div className='m-board'> 
             {board && board.map((_, rowIdx) => (
               <div className='row' key={`row-${rowIdx}`}>
@@ -132,15 +168,19 @@ const Memory = () => {
                   <div
                     key={`cell-${colIdx}`}
                     className={`m-cell ${clickEnabled ? 'click-enabled' : ''} ${cellClassName}`}
-                    onClick={() => clickEnabled && cellOnClick(rowIdx, colIdx)}
-                  >{col}</div>
+                    onClick={() => clickEnabled && !isChecked && cellOnClick(rowIdx, colIdx)}
+                  >{getCheckIcon(col)}</div>
                 )})}
               </div>
             ))}
             </div>
             <div className='button-section'>
-              <button onClick={onCheck}>Check</button>
-              <button onClick={onRestart}>Restart</button>
+              {isChecked ? (
+                <div className='result'>{result}</div>
+              ) : (
+                <button onClick={onCheck}>{'Check'}</button>
+              )}
+              <button onClick={onRestart}>{isChecked ? 'Play Again' : 'Restart'}</button>
             </div>
           </>
         )}
