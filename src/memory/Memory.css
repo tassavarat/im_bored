@@ -54,7 +54,8 @@
   cursor: pointer;
 }
 
-.userSelected, .highlighted {
+.userSelected,
+.highlighted {
   background-color: rgb(143, 143, 143);
 }
 
