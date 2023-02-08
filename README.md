@@ -19,7 +19,6 @@ _The app is not longer deployed_
 
 I'm Bored home page displays a collection of game options and a made by section. To play a game the user must click on any game. The title works as a home page button.
 
-[view github file](./src/home/main.js)
 
 ### Tic Tac Toe
 
