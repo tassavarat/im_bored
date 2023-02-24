@@ -155,7 +155,7 @@ const Memory = () => {
           </div>
         ) : (
           <>
-            <div className="m-board">
+            <div className="m-board" data-testid="m-board">
               {board &&
                 board.map((_, rowIdx) => (
                   <div className="row" key={`row-${rowIdx}`}>
